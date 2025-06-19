@@ -366,12 +366,15 @@ export class BorrowBookComponent implements OnInit {
     
     let borrowDateStr: string;
     if (formValues.borrowDate instanceof Date) {
-      borrowDateStr = formValues.borrowDate.toISOString();
+      // Fix: Use local date at midnight to avoid timezone shift
+      const d = formValues.borrowDate;
+      borrowDateStr = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0)).toISOString();
     } else if (typeof formValues.borrowDate === 'string') {
       const dateObj = new Date(formValues.borrowDate);
-      borrowDateStr = dateObj.toISOString();
+      borrowDateStr = new Date(Date.UTC(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate(), 0, 0, 0)).toISOString();
     } else {
-      borrowDateStr = new Date().toISOString();
+      const now = new Date();
+      borrowDateStr = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0)).toISOString();
     }
     
     // Add null checks to avoid "object possibly null" errors

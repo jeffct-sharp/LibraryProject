@@ -54,6 +54,8 @@ namespace FinalProject.Infrastructure.Repository
                 _context.Members.Remove(member);
                 await _context.SaveChangesAsync();
             }
+
+
         }
 
         public async Task<IEnumerable<Fine>> GetOutstandingFinesForMemberAsync(int memberId)

@@ -120,20 +120,37 @@ namespace FinalProject.Application.Services
 
             await _memberRepository.UpdateMemberAsync(member);
         }
-        
+
         public async Task DeleteMemberAsync(int memberId)
         {
+            var member = await _memberRepository.GetMemberByIdAsync(memberId);
+            if (member == null) throw new InvalidOperationException("Member not found.");
+
+            // Check for overdue fines
+            var overdueFines = await _memberRepository.GetUnpaidFinesOlderThan30DaysAsync(memberId);
+            if (overdueFines.Any())
+            {
+                throw new InvalidOperationException("Cannot delete member with overdue fines.");
+            }
+
+            // Check for active borrowings
+            var activeBorrowings = await _memberRepository.GetBorrowingsForMemberAsync(memberId);
+            if (activeBorrowings.Any(b => b.Status == "Borrowed"))
+            {
+                throw new InvalidOperationException("Cannot delete member with active borrowings.");
+            }
+
             // Delete the Member from the database
             await _memberRepository.DeleteMemberAsync(memberId);
 
             // Optionally, delete the associated IdentityUser
-            var user = await _userManager.FindByEmailAsync((await _memberRepository.GetMemberByIdAsync(memberId))?.Email);
+            var user = await _userManager.FindByEmailAsync(member.Email);
             if (user != null)
             {
                 await _userManager.DeleteAsync(user);
             }
         }
-        
+
         public async Task<IEnumerable<BorrowingTransaction>> GetBorrowingsForMemberAsync(int memberId)
         {
             return await _memberRepository.GetBorrowingsForMemberAsync(memberId);

@@ -176,7 +176,13 @@ export class MemberDetailsComponent implements OnInit {
   
   formatDate(date: string | null | undefined): string {
     if (!date) return 'N/A';
-    return new Date(date).toLocaleDateString();
+    // Parse as UTC to avoid timezone offset issues
+    const d = new Date(date);
+    // Use getUTC* methods to get the correct date parts
+    const year = d.getUTCFullYear();
+    const month = (d.getUTCMonth() + 1).toString().padStart(2, '0');
+    const day = d.getUTCDate().toString().padStart(2, '0');
+    return `${day}/${month}/${year}`;
   }
   
   isOverdue(transaction: BorrowingTransactionDto): boolean {
