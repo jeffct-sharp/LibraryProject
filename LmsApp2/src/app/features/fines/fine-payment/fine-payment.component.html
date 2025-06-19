@@ -1,0 +1,119 @@
+<div class="container mt-4">
+  <div class="card shadow mb-4">
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+      <h5 class="mb-0 text-primary">
+        <i class="pi pi-credit-card me-2"></i>Process Fine Payment
+      </h5>
+      <a routerLink="/fines" class="btn btn-outline-secondary">
+        <i class="pi pi-arrow-left me-2"></i>Back to Fines
+      </a>
+    </div>
+    
+    <div class="card-body">
+      <!-- Error Message -->
+      <div *ngIf="error" class="alert alert-danger d-flex align-items-center mb-4">
+        <i class="pi pi-exclamation-triangle me-2"></i>
+        <div>{{ error }}</div>
+      </div>
+      
+      <!-- Success Message -->
+      <div *ngIf="success" class="alert alert-success d-flex align-items-center mb-4">
+        <i class="pi pi-check-circle me-2"></i>
+        <div>Payment processed successfully! Redirecting to fines list...</div>
+      </div>
+      
+      <!-- Loading Indicator -->
+      <div *ngIf="loading" class="text-center p-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2 text-muted">Processing...</p>
+      </div>
+      
+      <div *ngIf="fine && !loading && !success" class="row">
+        <!-- Fine Details Card -->
+        <div class="col-md-6 mb-4">
+          <div class="card">
+            <div class="card-header bg-light">
+              <h6 class="mb-0">Fine Details</h6>
+            </div>
+            <div class="card-body">
+              <table class="table table-striped">
+                <tbody>
+                  <tr>
+                    <th scope="row">Fine ID</th>
+                    <td>{{ fine.fineID }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Member ID</th>
+                    <td>{{ fine.memberID }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Amount</th>
+                    <td class="fw-bold">{{ formatCurrency(fine.amount) }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Status</th>
+                    <td>
+                      <span class="badge bg-warning">{{ fine.status }}</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Transaction Date</th>
+                    <td>{{ formatDate(fine.transactionDate) }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Payment Form -->
+        <div class="col-md-6 mb-4">
+          <div class="card">
+            <div class="card-header bg-light">
+              <h6 class="mb-0">Payment Information</h6>
+            </div>
+            <div class="card-body">
+              <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()">
+                <!-- Hidden Fine ID field -->
+                <input type="hidden" formControlName="fineID">
+                
+                <div class="mb-3">
+                  <label for="amount" class="form-label">Payment Amount</label>
+                  <div class="input-group">
+                    <span class="input-group-text">₹</span>
+                    <input type="number" class="form-control" id="amount" formControlName="amount" readonly>
+                  </div>
+                  <small class="form-text text-muted">The full amount must be paid</small>
+                </div>
+                
+                <div class="mb-3">
+                  <label for="paymentMethod" class="form-label">Payment Method</label>
+                  <select class="form-select" id="paymentMethod" formControlName="paymentMethod">
+                    <option *ngFor="let method of paymentMethods" [value]="method">{{ method }}</option>
+                  </select>
+                </div>
+                
+                <div class="mb-3">
+                  <label for="notes" class="form-label">Notes (Optional)</label>
+                  <textarea class="form-control" id="notes" formControlName="notes" rows="3"
+                    placeholder="Add any payment details or reference numbers"></textarea>
+                </div>
+                
+                <div class="d-flex justify-content-between mt-4">
+                  <button type="button" class="btn btn-outline-secondary" (click)="cancelPayment()">
+                    <i class="pi pi-times me-2"></i>Cancel
+                  </button>
+                  <button type="submit" class="btn btn-success" [disabled]="paymentForm.invalid || !fine">
+                    <i class="pi pi-check me-2"></i>Process Payment
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

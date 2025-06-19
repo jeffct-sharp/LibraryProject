@@ -1,0 +1,237 @@
+<div class="notification-list-container">
+  <div class="header-section">
+    <div class="title-section">
+      <h2>
+        <i class="pi pi-bell me-2"></i>
+        {{ isMemberSpecific ? 'Member Notifications' : 'Notification Management' }}
+      </h2>
+      <p *ngIf="!isMemberSpecific" class="summary-text">
+        <span class="summary-total">{{ summary.total }} total notifications</span>
+        <span class="summary-recent" *ngIf="summary.recent > 0">, {{ summary.recent }} in the last 24 hours</span>
+      </p>
+    </div>
+    
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button mat-raised-button color="primary" *ngIf="canManageNotifications()" (click)="navigateToCreate()">
+        <mat-icon>add</mat-icon> Create Notification
+      </button>
+      
+      <button mat-raised-button color="basic" (click)="refresh()" matTooltip="Refresh notifications">
+        <mat-icon>refresh</mat-icon> Refresh
+      </button>
+      
+      <button mat-icon-button (click)="toggleView()" matTooltip="Toggle view mode">
+        <mat-icon>{{ viewMode === 'table' ? 'view_module' : 'view_list' }}</mat-icon>
+      </button>
+      
+      <!-- Admin/Librarian Notification Controls -->
+      <button mat-button color="primary" *ngIf="canManageNotifications()" [matMenuTriggerFor]="notifyMenu">
+        <mat-icon>notifications_active</mat-icon> Send Notifications <mat-icon>arrow_drop_down</mat-icon>
+      </button>
+      
+      <mat-menu #notifyMenu="matMenu">
+        <button mat-menu-item (click)="notifyDueBooks()">
+          <mat-icon>calendar_today</mat-icon> Due Books Reminder
+        </button>
+        <button mat-menu-item (click)="notifyOverdueBooks()">
+          <mat-icon>warning</mat-icon> Overdue Books
+        </button>
+        <button mat-menu-item (click)="promptForFinePayment()">
+          <mat-icon>payments</mat-icon> Fine Payment Notification
+        </button>
+        <button mat-menu-item (click)="performPeriodicChecks()">
+          <mat-icon>schedule</mat-icon> Run All Checks
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+  
+  <!-- Filter Panel -->
+  <mat-expansion-panel class="filter-panel">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-icon>filter_list</mat-icon> Filter Notifications
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    
+    <form [formGroup]="filterForm" class="filter-form">
+      <div class="filter-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Member ID/Name</mat-label>
+          <input matInput formControlName="memberName" placeholder="Enter member ID or name">
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline">
+          <mat-label>Search Message</mat-label>
+          <input matInput formControlName="searchTerm" placeholder="Search in notification message">
+        </mat-form-field>
+      </div>
+      
+      <div class="filter-row">
+        <mat-form-field appearance="outline">
+          <mat-label>From Date</mat-label>
+          <input matInput [matDatepicker]="fromPicker" formControlName="fromDate" placeholder="MM/DD/YYYY" aria-label="From Date">
+          <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+          <mat-datepicker #fromPicker></mat-datepicker>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline">
+          <mat-label>To Date</mat-label>
+          <input matInput [matDatepicker]="toPicker" formControlName="toDate" placeholder="MM/DD/YYYY" aria-label="To Date">
+          <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+          <mat-datepicker #toPicker></mat-datepicker>
+        </mat-form-field>
+        
+        <div class="filter-actions">
+          <button mat-button color="warn" (click)="resetFilters()">
+            <mat-icon>clear</mat-icon> Clear Filters
+          </button>
+        </div>
+      </div>
+    </form>
+  </mat-expansion-panel>
+  
+  <!-- Simple Search for Member-specific View -->
+  <div class="search-bar" *ngIf="!isMemberSpecific">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Quick Search by Member Name</mat-label>
+      <input matInput [(ngModel)]="searchName" (keyup.enter)="searchByMemberName()" placeholder="Enter member name">
+      <button mat-icon-button matSuffix *ngIf="searchName" (click)="clearSearch()" matTooltip="Clear search">
+        <mat-icon>close</mat-icon>
+      </button>
+      <button mat-icon-button matSuffix (click)="searchByMemberName()" matTooltip="Search">
+        <mat-icon>search</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+  
+  <!-- Loading Indicator -->
+  <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+  
+  <!-- Error Message -->
+  <div *ngIf="error" class="error-container">
+    <mat-card class="error-card">
+      <mat-card-content>
+        <div class="error-message">
+          <mat-icon>error</mat-icon>
+          <span>{{ error }}</span>
+        </div>
+        <button mat-button color="primary" (click)="refresh()">Try Again</button>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  
+  <!-- TABLE VIEW MODE -->
+  <div class="table-container" *ngIf="!loading && dataSource.data.length > 0 && viewMode === 'table'">
+    <table mat-table [dataSource]="dataSource" matSort class="notification-table">
+      <!-- ID Column -->
+      <ng-container matColumnDef="notificationId">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+        <td mat-cell *matCellDef="let notification"> {{notification.notificationID}} </td>
+      </ng-container>
+      
+      <!-- Member ID Column -->
+      <ng-container matColumnDef="memberId">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Member </th>
+        <td mat-cell *matCellDef="let notification"> 
+          {{notification.memberName || 'ID: ' + notification.memberID}} 
+        </td>
+      </ng-container>
+      
+      <!-- Message Column -->
+      <ng-container matColumnDef="message">
+        <th mat-header-cell *matHeaderCellDef> Message </th>
+        <td mat-cell *matCellDef="let notification" class="message-cell"> {{notification.message}} </td>
+      </ng-container>
+      
+      <!-- Date Sent Column -->
+      <ng-container matColumnDef="dateSent">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Date Sent </th>
+        <td mat-cell *matCellDef="let notification" [matTooltip]="formatDate(notification.dateSent)"> 
+          {{getTimeAgo(notification.dateSent)}} 
+        </td>
+      </ng-container>
+      
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <td mat-cell *matCellDef="let notification" class="actions-cell">
+          <button mat-icon-button color="primary" (click)="viewNotification(notification.notificationID)" matTooltip="View details">
+            <mat-icon>visibility</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteNotification(notification.notificationID)" matTooltip="Delete notification">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    
+    <!-- Paginator -->
+    <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons></mat-paginator>
+  </div>
+  
+  <!-- CARD VIEW MODE -->
+  <div class="card-view" *ngIf="!loading && dataSource.data.length > 0 && viewMode === 'card'">
+    <div class="notification-grid">
+      <mat-card class="notification-card" *ngFor="let notification of dataSource.filteredData">
+        <mat-card-header>
+          <mat-icon mat-card-avatar class="notification-icon">notification_important</mat-icon>
+          <mat-card-title>#{{notification.notificationID}}</mat-card-title>
+          <mat-card-subtitle>
+            {{ getTimeAgo(notification.dateSent) }}
+          </mat-card-subtitle>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <p class="notification-message">{{notification.message}}</p>
+          <p class="member-info" *ngIf="canManageNotifications()">
+            Member: {{notification.memberName || 'ID: ' + notification.memberID}}
+          </p>
+        </mat-card-content>
+        
+        <mat-card-actions align="end">
+          <button mat-button color="primary" (click)="viewNotification(notification.notificationID)">
+            <mat-icon>visibility</mat-icon> View
+          </button>
+          <button mat-button color="warn" (click)="deleteNotification(notification.notificationID)">
+            <mat-icon>delete</mat-icon> Delete
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+    
+    <!-- Paginator for card view -->
+    <mat-paginator [pageSizeOptions]="[12, 24, 48]" showFirstLastButtons></mat-paginator>
+  </div>
+  
+  <!-- Empty State -->
+  <div *ngIf="!loading && dataSource.data.length === 0" class="empty-state">
+    <mat-icon class="empty-icon">notifications_off</mat-icon>
+    <p class="empty-text">No notifications found.</p>
+    <button mat-raised-button color="primary" *ngIf="canManageNotifications()" (click)="navigateToCreate()">
+      Create Notification
+    </button>
+  </div>
+</div>
+
+<!-- Fine Payment ID Dialog (hidden by default) -->
+<div *ngIf="showFineIdPrompt" class="fine-id-prompt-overlay">
+  <div class="fine-id-prompt-container">
+    <h2>Enter Fine ID</h2>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Fine ID</mat-label>
+      <input matInput type="number" [(ngModel)]="fineIdForPayment" min="1" placeholder="Enter Fine ID">
+      <mat-hint>Enter the ID of the fine to send payment notification</mat-hint>
+    </mat-form-field>
+    <div class="prompt-actions">
+      <button mat-button (click)="cancelFineIdPrompt()">Cancel</button>
+      <button mat-raised-button color="primary" [disabled]="!fineIdForPayment || fineIdForPayment < 1" (click)="sendFinePaymentNotification()">
+        Send Notification
+      </button>
+    </div>
+  </div>
+</div>

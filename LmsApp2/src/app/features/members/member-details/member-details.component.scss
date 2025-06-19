@@ -1,0 +1,147 @@
+.avatar-circle {
+  width: 100px;
+  height: 100px;
+  background-color: #1a237e;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  
+  .initials {
+    font-size: 40px;
+    color: white;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+}
+
+.membership-badge {
+  display: inline-block;
+  padding: 0.35em 0.65em;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25rem;
+  margin-top: 0;
+  color: white;
+  
+  &.bg-success {
+    background-color: #28a745 !important;
+  }
+  
+  &.bg-danger {
+    background-color: #dc3545 !important;
+  }
+}
+
+.profile-details {
+  margin-top: 24px;
+  
+  .detail-item {
+    margin-bottom: 12px;
+    
+    .detail-label {
+      font-weight: 500;
+      color: #666;
+      display: inline-block;
+      width: 120px;
+    }
+    
+    .detail-value {
+      color: #212529;
+      word-break: break-word;
+    }
+  }
+}
+
+.summary-card {
+  height: 100%;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.08);
+  }
+  
+  .summary-value {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #1a237e;
+    
+    &.text-danger {
+      color: #dc3545 !important;
+    }
+  }
+  
+  .summary-label {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-top: 4px;
+  }
+  
+  &.border-danger {
+    border-color: #dc3545 !important;
+  }
+}
+
+// Table styling
+.table {
+  thead th {
+    border-top: 0;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: 600;
+    color: #495057;
+  }
+  
+  tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+  }
+}
+
+.badge {
+  padding: 0.35em 0.65em;
+  font-size: 0.75rem;
+  
+  &.bg-success {
+    background-color: #28a745 !important;
+  }
+  
+  &.bg-warning {
+    background-color: #ffc107 !important;
+    color: #212529 !important;
+  }
+  
+  &.bg-danger {
+    background-color: #dc3545 !important;
+  }
+}
+
+// Responsive improvements
+@media (max-width: 767.98px) {
+  .summary-card {
+    margin-bottom: 1rem;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start !important;
+    
+    .d-flex.gap-2, .btn-group {
+      margin-top: 0.5rem;
+      width: 100%;
+      justify-content: flex-start;
+    }
+  }
+  
+  .table-responsive {
+    margin: 0 -16px;
+    
+    table {
+      margin-bottom: 0;
+    }
+  }
+}

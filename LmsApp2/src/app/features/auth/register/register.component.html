@@ -1,0 +1,139 @@
+<div class="auth-container">
+  <mat-card class="auth-card">
+    <mat-card-header>
+      <mat-card-title>Create a New Account</mat-card-title>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <div *ngIf="error" class="error-message">
+        <mat-icon>error_outline</mat-icon>
+        <span>{{ error }}</span>
+      </div>
+      
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <!-- Name -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Full Name</mat-label>
+          <input matInput formControlName="name" placeholder="Enter your full name">
+          <mat-icon matSuffix>person</mat-icon>
+          <mat-error *ngIf="registerForm.get('name')?.hasError('required')">
+            Name is required
+          </mat-error>
+          <mat-error *ngIf="registerForm.get('name')?.hasError('minlength')">
+            Name must be at least 3 characters
+          </mat-error>
+        </mat-form-field>
+        
+        <!-- Email -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" placeholder="Enter your email" type="email">
+          <mat-icon matSuffix>email</mat-icon>
+          <mat-error *ngIf="registerForm.get('email')?.hasError('required')">
+            Email is required
+          </mat-error>
+          <mat-error *ngIf="registerForm.get('email')?.hasError('email')">
+            Please enter a valid email address
+          </mat-error>
+        </mat-form-field>
+        
+        <!-- Phone -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Phone Number</mat-label>
+          <input matInput formControlName="phone" placeholder="Enter your 10-digit phone number">
+          <mat-icon matSuffix>phone</mat-icon>
+          <mat-error *ngIf="registerForm.get('phone')?.hasError('required')">
+            Phone number is required
+          </mat-error>
+          <mat-error *ngIf="registerForm.get('phone')?.hasError('pattern')">
+            Please enter a valid 10-digit phone number
+          </mat-error>
+        </mat-form-field>
+        
+        <!-- Address -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Address</mat-label>
+          <textarea matInput formControlName="address" placeholder="Enter your address" rows="3"></textarea>
+          <mat-icon matSuffix>home</mat-icon>
+          <mat-error *ngIf="registerForm.get('address')?.hasError('required')">
+            Address is required
+          </mat-error>
+          <mat-error *ngIf="registerForm.get('address')?.hasError('minlength')">
+            Address must be at least 5 characters
+          </mat-error>
+        </mat-form-field>
+        
+        <!-- Password -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Password</mat-label>
+          <input 
+            matInput 
+            [type]="hidePassword ? 'password' : 'text'" 
+            formControlName="password"
+            placeholder="Enter a strong password">
+          <button 
+            mat-icon-button 
+            matSuffix 
+            (click)="hidePassword = !hidePassword" 
+            [attr.aria-label]="'Hide password'" 
+            [attr.aria-pressed]="hidePassword"
+            type="button">
+            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          <mat-error *ngIf="registerForm.get('password')?.hasError('required')">
+            Password is required
+          </mat-error>
+          <mat-error *ngIf="registerForm.get('password')?.hasError('minlength')">
+            Password must be at least 6 characters
+          </mat-error>
+        </mat-form-field>
+        
+        <!-- Confirm Password -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Confirm Password</mat-label>
+          <input 
+            matInput 
+            [type]="hideConfirmPassword ? 'password' : 'text'" 
+            formControlName="confirmPassword"
+            placeholder="Confirm your password">
+          <button 
+            mat-icon-button 
+            matSuffix 
+            (click)="hideConfirmPassword = !hideConfirmPassword" 
+            [attr.aria-label]="'Hide password'" 
+            [attr.aria-pressed]="hideConfirmPassword"
+            type="button">
+            <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          <mat-error *ngIf="registerForm.get('confirmPassword')?.hasError('required')">
+            Please confirm your password
+          </mat-error>
+          <mat-error *ngIf="registerForm.get('confirmPassword')?.hasError('passwordMismatch')">
+            Passwords do not match
+          </mat-error>
+        </mat-form-field>
+        
+        <!-- Submit Button -->
+        <div class="button-row">
+          <button 
+            mat-raised-button 
+            color="primary" 
+            type="submit" 
+            class="full-width"
+            [disabled]="loading">
+            <mat-spinner *ngIf="loading" diameter="20" class="spinner"></mat-spinner>
+            <span *ngIf="!loading">Register</span>
+          </button>
+        </div>
+      </form>
+      
+      <!-- Login Link and Back Button -->
+      <div class="additional-options">
+        <span>Already have an account? <a mat-button color="primary" (click)="navigateToLogin()">Login here</a></span>
+        <button mat-button color="basic" (click)="navigateToHome()">
+          <mat-icon>arrow_back</mat-icon> Back to Home
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

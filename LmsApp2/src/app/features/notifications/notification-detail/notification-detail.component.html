@@ -1,0 +1,87 @@
+<div class="notification-detail-container">
+  <mat-card>
+    <mat-card-header>
+      <div mat-card-avatar class="notification-avatar">
+        <mat-icon>notifications</mat-icon>
+      </div>
+      <mat-card-title>Notification Details</mat-card-title>
+      <mat-card-subtitle *ngIf="notification">ID: {{ notification.notificationID }}</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+    
+    <!-- Error Alert -->
+    <div *ngIf="error" class="error-alert">
+      <mat-icon>error</mat-icon>
+      <span>{{ error }}</span>
+    </div>
+    
+    <mat-card-content *ngIf="notification && !loading">
+      <div class="detail-section">
+        <h3>Message</h3>
+        <div class="message-box">
+          <p>{{ notification.message }}</p>
+        </div>
+      </div>
+      
+      <div class="detail-grid">
+        <div class="detail-item">
+          <span class="detail-label">Notification ID</span>
+          <span class="detail-value">{{ notification.notificationID }}</span>
+        </div>
+        
+        <div class="detail-item">
+          <span class="detail-label">Member</span>
+          <span class="detail-value">
+            {{ memberName || 'ID: ' + notification.memberID }}
+            <button mat-icon-button color="primary" (click)="viewMember()" matTooltip="View member details">
+              <mat-icon>person</mat-icon>
+            </button>
+            <button mat-icon-button color="accent" (click)="viewMemberNotifications()" matTooltip="View all notifications for this member">
+              <mat-icon>notifications</mat-icon>
+            </button>
+          </span>
+        </div>
+        
+        <div class="detail-item">
+          <span class="detail-label">Date Sent</span>
+          <span class="detail-value" [matTooltip]="formatDate(notification.dateSent)">
+            {{ getTimeAgo(notification.dateSent) }}
+          </span>
+        </div>
+      </div>
+    </mat-card-content>
+    
+    <mat-card-actions *ngIf="notification && !loading" class="action-buttons">
+      <div>
+        <button mat-raised-button color="primary" (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon>
+          Back
+        </button>
+      </div>
+      
+      <div>
+        <button *ngIf="canDelete()" mat-raised-button color="warn" (click)="deleteNotification()">
+          <mat-icon>delete</mat-icon>
+          Delete
+        </button>
+      </div>
+    </mat-card-actions>
+  </mat-card>
+  
+  <!-- Centered Loading State -->
+  <div *ngIf="loading && !notification" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading notification details...</p>
+  </div>
+  
+  <!-- Not Found State -->
+  <div *ngIf="!notification && !loading && error" class="not-found-container">
+    <mat-icon class="not-found-icon">search_off</mat-icon>
+    <h2>Notification Not Found</h2>
+    <p>The notification you're looking for could not be found.</p>
+    <button mat-raised-button color="primary" (click)="goBack()">
+      Back to Notifications
+    </button>
+  </div>
+</div>

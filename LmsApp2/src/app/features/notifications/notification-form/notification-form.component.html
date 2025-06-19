@@ -1,0 +1,133 @@
+<div class="notification-form-container">
+  <mat-card>
+    <mat-card-header>
+      <div mat-card-avatar class="notification-avatar">
+        <mat-icon>notification_important</mat-icon>
+      </div>
+      <mat-card-title>Create New Notification</mat-card-title>
+      <mat-card-subtitle>Send a notification to a library member</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <!-- Error Alert -->
+      <div *ngIf="error" class="error-alert">
+        <mat-icon>error</mat-icon>
+        <span>{{ error }}</span>
+      </div>
+      
+      <!-- Success Message -->
+      <div *ngIf="success" class="success-alert">
+        <mat-icon>check_circle</mat-icon>
+        <span>Notification sent successfully! Redirecting...</span>
+      </div>
+      
+      <form [formGroup]="notificationForm" (ngSubmit)="onSubmit()">
+        <!-- Search for Member -->
+        <div class="search-container" *ngIf="!membersLoading && !loading && !success">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Search for Member</mat-label>
+            <input matInput [(ngModel)]="searchTerm" [ngModelOptions]="{standalone: true}" 
+                   (input)="searchMembers()" placeholder="Search by name, email or ID">
+            <button mat-icon-button matSuffix *ngIf="searchTerm" (click)="searchTerm=''; searchMembers()" type="button">
+              <mat-icon>close</mat-icon>
+            </button>
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+        </div>
+        
+        <!-- Member Selection -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Select Member</mat-label>
+          <mat-select formControlName="memberId" [disabled]="membersLoading || loading || success">
+            <mat-option *ngIf="membersLoading" disabled>Loading members...</mat-option>
+            <mat-option value="" disabled>Select a member</mat-option>
+            <mat-option value="all">
+              <strong>Send to All Active Members</strong>
+            </mat-option>
+            <mat-option *ngFor="let member of filteredMembers" [value]="member.memberID">
+              {{ member.name }} ({{ member.email || 'No email' }})
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="notificationForm.get('memberId')?.hasError('required') && notificationForm.get('memberId')?.touched">
+            Please select a member
+          </mat-error>
+        </mat-form-field>
+        
+        <!-- Selected Member Preview -->
+        <div *ngIf="getSelectedMemberName()" class="selected-member">
+          <mat-icon>person</mat-icon>
+          <span>Sending to: <strong>{{ getSelectedMemberName() }}</strong></span>
+        </div>
+        
+        <div *ngIf="notificationForm.get('memberId')?.value === 'all'" class="bulk-notification-alert">
+          <mat-icon>people</mat-icon>
+          <span>This notification will be sent to all active members</span>
+        </div>
+        
+        <!-- Template Selection -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Message Template</mat-label>
+          <mat-select formControlName="template" [disabled]="loading || success">
+            <mat-option *ngFor="let template of templateOptions" [value]="template.value">
+              {{ template.label }}
+            </mat-option>
+          </mat-select>
+          <mat-hint>Choose a template or use "General Notice" for custom messages</mat-hint>
+        </mat-form-field>
+        
+        <!-- Message Input -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Message</mat-label>
+          <textarea 
+            matInput 
+            formControlName="message" 
+            placeholder="Enter notification message" 
+            rows="5"
+            [disabled]="loading || success"
+            maxlength="500">
+          </textarea>
+          <mat-hint align="end" [class.text-danger]="remainingChars < 50">
+            {{ remainingChars }} characters remaining
+          </mat-hint>
+          <mat-error *ngIf="notificationForm.get('message')?.hasError('required') && notificationForm.get('message')?.touched">
+            Message is required
+          </mat-error>
+          <mat-error *ngIf="notificationForm.get('message')?.hasError('maxlength')">
+            Message cannot exceed 500 characters
+          </mat-error>
+        </mat-form-field>
+      </form>
+    </mat-card-content>
+    
+    <!-- Progress Bar -->
+    <mat-progress-bar *ngIf="loading || membersLoading" mode="indeterminate"></mat-progress-bar>
+    
+    <mat-card-actions class="action-buttons">
+      <button 
+        mat-raised-button 
+        color="primary" 
+        [disabled]="notificationForm.invalid || loading || membersLoading || success"
+        (click)="onSubmit()">
+        <mat-icon>send</mat-icon>
+        Send Notification
+      </button>
+      <button 
+        mat-button 
+        color="warn" 
+        type="button" 
+        [disabled]="loading || success"
+        (click)="resetForm()">
+        <mat-icon>refresh</mat-icon>
+        Reset
+      </button>
+      <button 
+        mat-button 
+        type="button" 
+        [disabled]="loading || success"
+        (click)="cancel()">
+        <mat-icon>arrow_back</mat-icon>
+        Cancel
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

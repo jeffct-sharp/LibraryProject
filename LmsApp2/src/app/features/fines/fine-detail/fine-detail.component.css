@@ -1,0 +1,163 @@
+.card {
+  border: none;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  border-radius: 0.5rem;
+  transition: box-shadow 0.3s;
+}
+
+.card:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+  background-color: #fff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.badge {
+  padding: 0.35em 0.65em;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+  border-radius: 0.25rem;
+}
+
+.bg-success {
+  background-color: #28a745 !important;
+  color: #fff;
+}
+
+.bg-warning {
+  background-color: #ffc107 !important;
+  color: #212529 !important;
+}
+
+.table {
+  margin-bottom: 0;
+}
+
+.table th {
+  font-weight: 600;
+  color: #495057;
+  background-color: #f8f9fa;
+  width: 35%;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-primary {
+  background-color: #1a237e;
+  border-color: #1a237e;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: #151c64;
+  border-color: #151c64;
+}
+
+.btn-success {
+  background-color: #28a745;
+  border-color: #28a745;
+  color: #fff;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+  border-color: #1e7e34;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+}
+
+.btn-info {
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+  color: #fff;
+}
+
+.btn-info:hover {
+  background-color: #138496;
+  border-color: #117a8b;
+  color: #fff;
+}
+
+.btn-outline-secondary {
+  color: #6c757d;
+  border-color: #6c757d;
+}
+
+.btn-outline-secondary:hover {
+  color: #fff;
+  background-color: #6c757d;
+  border-color: #6c757d;
+}
+
+.fine-amount {
+  font-weight: 700;
+  color: #dc3545;
+}
+
+.alert {
+  border-radius: 0.25rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  color: #721c24;
+}
+
+.border-bottom {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125) !important;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+}
+
+@media (max-width: 767.98px) {
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start !important;
+  }
+  
+  .card-header button {
+    margin-top: 1rem;
+    width: 100%;
+  }
+  
+  .d-flex.justify-content-end {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .d-flex.justify-content-end .btn,
+  .d-flex.justify-content-end a {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+}

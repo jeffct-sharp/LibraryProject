@@ -1,0 +1,253 @@
+<div class="container mt-4">
+  <div class="card shadow">
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+      <h5 class="mb-0 text-primary">
+        <i class="pi pi-history me-2"></i>Member Borrowing History
+      </h5>
+      <div>
+        <button class="btn btn-primary me-2" (click)="exportToCSV()" [disabled]="filteredTransactions.length === 0">
+          <i class="pi pi-file-excel me-2"></i>Export
+        </button>
+        <button class="btn btn-outline-secondary" (click)="goBack()">
+          <i class="pi pi-arrow-left me-2"></i>Back
+        </button>
+      </div>
+    </div>
+    
+    <div class="card-body">
+      <!-- Error Message -->
+      <div *ngIf="error" class="alert alert-danger d-flex align-items-center mb-4">
+        <i class="pi pi-exclamation-triangle me-2"></i>
+        <div>{{ error }}</div>
+      </div>
+      
+      <!-- Loading Indicator for Member Info -->
+      <div *ngIf="loading.member" class="text-center py-3">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading member details...</span>
+        </div>
+      </div>
+      
+      <!-- Member Details -->
+      <div *ngIf="!loading.member && member" class="member-info mb-4">
+        <div class="row">
+          <div class="col-md-8">
+            <h4>{{ member.name }}</h4>
+            <div class="d-flex flex-wrap gap-3 mb-2">
+              <div class="member-detail-item">
+                <span class="label">Member ID:</span>
+                <span class="value">{{ member.memberID }}</span>
+              </div>
+              <div class="member-detail-item">
+                <span class="label">Email:</span>
+                <span class="value">{{ member.email || 'N/A' }}</span>
+              </div>
+              <div class="member-detail-item">
+                <span class="label">Phone:</span>
+                <span class="value">{{ member.phone || 'N/A' }}</span>
+              </div>
+            </div>
+            <div class="mt-2">
+              <span class="badge bg-primary p-2">{{ member.membershipStatus }}</span>
+              <span *ngIf="member.membershipEndDate" class="ms-2 text-muted">
+                Membership valid until: {{ formatDate(member.membershipEndDate) }}
+              </span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card bg-light h-100">
+              <div class="card-body">
+                <h6 class="card-title">Borrowing Summary</h6>
+                <div class="summary-item">
+                  <span>Total Books:</span>
+                  <span class="fw-bold">{{ summaryMetrics.totalBooks }}</span>
+                </div>
+                <div class="summary-item">
+                  <span>Currently Borrowed:</span>
+                  <span class="fw-bold">{{ summaryMetrics.currentlyBorrowed }}</span>
+                </div>
+                <div class="summary-item">
+                  <span>Overdue:</span>
+                  <span class="fw-bold text-danger">{{ summaryMetrics.overdue }}</span>
+                </div>
+                <div class="summary-item">
+                  <span>Returned:</span>
+                  <span class="fw-bold">{{ summaryMetrics.returned }}</span>
+                </div>
+                <div class="summary-item" *ngIf="summaryMetrics.averageBorrowingDays > 0">
+                  <span>Avg. Borrowing Days:</span>
+                  <span class="fw-bold">{{ summaryMetrics.averageBorrowingDays }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Filter Panel with Toggle Button -->
+      <div class="filter-panel mb-4">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5 class="mb-0 filter-heading">
+                <i class="pi pi-filter me-2"></i>Filters
+              </h5>
+              <div>
+                <button class="btn btn-sm btn-outline-secondary me-2" (click)="clearFilters()" *ngIf="isFilterPanelExpanded">
+                  <i class="pi pi-filter-slash me-1"></i>Clear Filters
+                </button>
+                <button class="btn btn-sm btn-outline-primary" (click)="toggleFilterPanel()">
+                  <i class="pi" [ngClass]="isFilterPanelExpanded ? 'pi-minus' : 'pi-plus'"></i>
+                  {{ isFilterPanelExpanded ? 'Minimize' : 'Expand' }}
+                </button>
+              </div>
+            </div>
+            
+            <!-- Filter form container with animation -->
+            <div [@expandCollapse]="isFilterPanelExpanded ? 'expanded' : 'collapsed'">
+              <form [formGroup]="filterForm" *ngIf="isFilterPanelExpanded">
+                <div class="row">
+                  <div class="col-md-4 mb-3">
+                    <label for="status" class="form-label">Status</label>
+                    <select formControlName="status" id="status" class="form-select">
+                      <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
+                    </select>
+                  </div>
+                  
+                  <div class="col-md-4 mb-3">
+                    <label for="dateFrom" class="form-label">From Date</label>
+                    <input type="date" formControlName="dateFrom" id="dateFrom" class="form-control">
+                  </div>
+                  
+                  <div class="col-md-4 mb-3">
+                    <label for="dateTo" class="form-label">To Date</label>
+                    <input type="date" formControlName="dateTo" id="dateTo" class="form-control">
+                  </div>
+                  
+                  <div class="col-md-8 mb-3">
+                    <label for="searchTerm" class="form-label">Search</label>
+                    <div class="input-group">
+                      <span class="input-group-text"><i class="pi pi-search"></i></span>
+                      <input type="text" formControlName="searchTerm" id="searchTerm" class="form-control" 
+                             placeholder="Search by book title...">
+                    </div>
+                  </div>
+                  
+                  <div class="col-md-4 mb-3 d-flex align-items-end">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" formControlName="showReturned" id="showReturned">
+                      <label class="form-check-label" for="showReturned">Show Returned Books</label>
+                    </div>
+                  </div>
+                  
+                  <div class="col-md-8 mb-3">
+                    <label for="sortBy" class="form-label">Sort By</label>
+                    <div class="input-group">
+                      <select formControlName="sortBy" id="sortBy" class="form-select">
+                        <option value="borrowDate">Borrow Date</option>
+                        <option value="dueDate">Due Date</option>
+                        <option value="returnDate">Return Date</option>
+                        <option value="status">Status</option>
+                      </select>
+                      <select formControlName="sortDirection" class="form-select" aria-label="Sort Direction">
+                        <option value="desc">Descending</option>
+                        <option value="asc">Ascending</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div class="col-md-4 mb-3 d-flex align-items-end">
+                    <button type="button" class="btn btn-primary w-100" (click)="refreshData()">
+                      <i class="pi pi-refresh me-2"></i>Refresh
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Loading Spinner for Transactions -->
+      <div *ngIf="loading.transactions" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2 text-muted">Loading transaction history...</p>
+      </div>
+      
+      <!-- Transaction List -->
+      <div *ngIf="!loading.transactions">
+        <div *ngIf="filteredTransactions.length === 0" class="text-center py-5">
+          <i class="pi pi-book" style="font-size: 3rem; color: #ccc;"></i>
+          <h4 class="mt-3">No transactions found</h4>
+          <p class="text-muted">No borrowing history matching your criteria</p>
+        </div>
+        
+        <div *ngIf="filteredTransactions.length > 0" class="table-responsive">
+          <table class="table table-striped table-hover">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Book</th>
+                <th>Borrow Date</th>
+                <th>Due Date</th>
+                <th>Return Date</th>
+                <th>Status</th>
+                <th>Days Overdue</th>
+                <th>Fine</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let transaction of filteredTransactions" 
+                  [class.overdue-row]="transaction.isOverdue"
+                  [class.returned-row]="transaction.status === 'Returned'">
+                <td>{{ transaction.transactionID }}</td>
+                <td>{{ transaction.bookName }}</td>
+                <td>{{ formatDate(transaction.borrowDate) }}</td>
+                <td>{{ formatDate(transaction.dueDate) }}</td>
+                <td>{{ formatDate(transaction.returnDate) }}</td>
+                <td>
+                  <span class="badge" [ngClass]="'bg-' + getStatusClass(transaction)">
+                    {{ calculateStatus(transaction) }}
+                  </span>
+                </td>
+                <td>
+                  <span *ngIf="transaction.isOverdue || transaction.daysOverdue" 
+                        [class.text-danger]="transaction.isOverdue">
+                    {{ transaction.daysOverdue || 0 }}
+                  </span>
+                  <span *ngIf="!transaction.isOverdue && !transaction.daysOverdue">-</span>
+                </td>
+                <td>
+                  <span *ngIf="transaction.isOverdue && transaction.fineAmount" class="text-danger">
+                    ₹{{ transaction.fineAmount.toFixed(2) }}
+                  </span>
+                  <span *ngIf="!transaction.isOverdue || !transaction.fineAmount">-</span>
+                </td>
+                <td>
+                  <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-info" 
+                            aria-label="View Transaction Details" 
+                            title="View Transaction Details" 
+                            (click)="viewTransactionDetails(transaction.transactionID)">
+                      <i class="pi pi-eye"></i>
+                    </button>
+                    <button *ngIf="transaction.status !== 'Returned' && isAdminOrLibrarian()" 
+                            class="btn btn-sm btn-success" 
+                            title="Return Book"
+                            aria-label="Return Book"
+                            (click)="returnBook(transaction.transactionID)">
+                      <i class="pi pi-check"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

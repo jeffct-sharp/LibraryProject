@@ -1,0 +1,221 @@
+// Summary cards
+.summary-card {
+  height: 100%;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.08);
+  }
+  
+  .summary-value {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #1a237e;
+    
+    &.text-danger {
+      color: #dc3545 !important;
+    }
+  }
+  
+  .summary-label {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-top: 4px;
+  }
+  
+  &.border-danger {
+    border-color: #dc3545 !important;
+  }
+}
+
+// Tab content
+.tab-content {
+  min-height: 300px;
+  padding: 1rem;
+}
+
+// Table styling
+.table {
+  thead th {
+    border-top: 0;
+    font-weight: 600;
+    color: #495057;
+  }
+  
+  tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+  }
+  
+  &.table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.02);
+  }
+}
+
+.badge {
+  padding: 0.35em 0.65em;
+  font-size: 0.75rem;
+  
+  &.bg-success {
+    background-color: #28a745 !important;
+  }
+  
+  &.bg-warning {
+    background-color: #ffc107 !important;
+    color: #212529 !important;
+  }
+  
+  &.bg-danger {
+    background-color: #dc3545 !important;
+  }
+}
+
+// Status badges
+.status-badge {
+  padding: 0.35em 0.65em;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25rem;
+  
+  &.status-active {
+    background-color: #28a745;
+    color: #fff;
+  }
+  
+  &.status-suspended {
+    background-color: #dc3545;
+    color: #fff;
+  }
+}
+
+// Responsive improvements
+@media (max-width: 767.98px) {
+  .summary-card {
+    margin-bottom: 1rem;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start !important;
+    
+    a.btn {
+      margin-top: 0.5rem;
+    }
+  }
+  
+  .table-responsive {
+    margin: 0 -16px;
+    
+    table {
+      margin-bottom: 0;
+    }
+  }
+  
+  .mat-button-toggle-group {
+    flex-wrap: wrap;
+  }
+  
+  .d-flex.flex-wrap {
+    justify-content: center;
+    
+    .ms-auto {
+      margin-left: 0 !important;
+      margin-top: 1rem;
+      width: 100%;
+      
+      .mat-form-field {
+        width: 100% !important;
+      }
+    }
+  }
+  
+  .btn-group {
+    flex-wrap: wrap;
+    
+    .btn {
+      margin-bottom: 0.5rem;
+    }
+  }
+}
+
+// Material tab styling
+::ng-deep .mat-tab-group {
+  .mat-tab-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  }
+  
+  .mat-tab-label {
+    height: 48px;
+    padding: 0 24px;
+    opacity: 1;
+    color: rgba(0, 0, 0, 0.6);
+    
+    &.mat-tab-label-active {
+      color: #1a237e;
+      opacity: 1;
+    }
+  }
+  
+  .mat-ink-bar {
+    background-color: #1a237e !important;
+    height: 3px;
+  }
+}
+
+// Button styling
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+.btn-primary {
+  background-color: #1a237e;
+  border-color: #1a237e;
+  
+  &:hover {
+    background-color: #151c64;
+    border-color: #151c64;
+  }
+}
+
+.btn-outline-primary {
+  color: #1a237e;
+  border-color: #1a237e;
+  
+  &:hover {
+    background-color: #1a237e;
+    border-color: #1a237e;
+    color: white;
+  }
+}
+
+// Card styling
+.card {
+  border: none;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  margin-bottom: 1.5rem;
+}
+
+// Loading spinner
+.spinner-border {
+  width: 1rem;
+  height: 1rem;
+  
+  &.spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+  }
+}
+
+// Highlight overdue rows
+.table-danger {
+  --bs-table-bg: rgba(220, 53, 69, 0.1);
+  --bs-table-striped-bg: rgba(220, 53, 69, 0.15);
+  --bs-table-hover-bg: rgba(220, 53, 69, 0.2);
+}

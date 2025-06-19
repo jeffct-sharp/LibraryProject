@@ -1,0 +1,34 @@
+.availability-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35em 0.65em;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25rem;
+  
+  mat-icon {
+    font-size: 1em;
+    height: 1em;
+    width: 1em;
+    margin-right: 0.25em;
+  }
+  
+  &.badge-available {
+    background-color: #198754;
+    color: #fff;
+  }
+  
+  &.badge-limited {
+    background-color: #ffc107;
+    color: #000;
+  }
+  
+  &.badge-unavailable {
+    background-color: #dc3545;
+    color: #fff;
+  }
+}

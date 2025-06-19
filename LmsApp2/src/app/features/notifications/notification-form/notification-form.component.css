@@ -1,0 +1,124 @@
+.notification-form-container {
+  max-width: 700px;
+  margin: 32px auto;
+  padding: 0 16px;
+}
+
+.notification-avatar {
+  background-color: #f44336;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notification-avatar mat-icon {
+  color: white;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  justify-content: flex-end;
+}
+
+mat-card {
+  border: none;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  border-radius: 0.5rem;
+  transition: box-shadow 0.3s;
+}
+
+mat-card:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+mat-card-header {
+  margin-bottom: 20px;
+}
+
+mat-card-title {
+  font-size: 24px;
+  color: #3f51b5;
+}
+
+mat-card-subtitle {
+  font-size: 16px;
+}
+
+.selected-member {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  background-color: #e3f2fd;
+  border-radius: 4px;
+  color: #0d47a1;
+  border-left: 4px solid #1976d2;
+}
+
+.bulk-notification-alert {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  background-color: #fff3e0;
+  border-radius: 4px;
+  color: #e65100;
+  border-left: 4px solid #ff9800;
+}
+
+.error-alert {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  background-color: #ffebee;
+  border-left: 4px solid #f44336;
+  border-radius: 4px;
+  color: #d32f2f;
+}
+
+.success-alert {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  background-color: #e8f5e9;
+  border-left: 4px solid #4caf50;
+  border-radius: 4px;
+  color: #2e7d32;
+}
+
+.text-danger {
+  color: #f44336;
+}
+
+.search-container {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .action-buttons button {
+    width: 100%;
+  }
+  
+  .notification-form-container {
+    padding: 0 8px;
+  }
+}

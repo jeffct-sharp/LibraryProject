@@ -1,0 +1,16 @@
+.dialog-content {
+  display: flex;
+  align-items: flex-start;
+  
+  .dialog-icon {
+    margin-right: 16px;
+    color: #1a237e;
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+  }
+  
+  p {
+    margin-top: 0;
+  }
+}

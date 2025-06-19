@@ -1,0 +1,49 @@
+.search-form-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  
+  mat-form-field {
+    flex: 1 1 calc(50% - 1rem);
+    min-width: 200px;
+  }
+  
+  .year-range {
+    display: flex;
+    gap: 1rem;
+    flex: 1 1 calc(50% - 1rem);
+    min-width: 200px;
+    
+    mat-form-field {
+      flex: 1;
+    }
+  }
+  
+  mat-checkbox {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+}
+
+.active-filters {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  
+  h4 {
+    margin-bottom: 0.5rem;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.6);
+  }
+  
+  mat-chip-list {
+    mat-chip {
+      margin-bottom: 0.5rem;
+    }
+  }
+}
+
+.search-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}

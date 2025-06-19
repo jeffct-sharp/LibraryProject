@@ -1,0 +1,289 @@
+.card {
+  border: none;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  border-radius: 0.5rem;
+
+  .card-header {
+    background-color: #fff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  }
+}
+
+// Status badges
+.badge {
+  padding: 0.5em 0.75em;
+  font-weight: 500;
+  border-radius: 0.25rem;
+}
+
+.bg-primary {
+  background-color: #1a237e !important;
+}
+
+.bg-success {
+  background-color: #28a745 !important;
+}
+
+.bg-danger {
+  background-color: #dc3545 !important;
+}
+
+.bg-secondary {
+  background-color: #6c757d !important;
+}
+
+// Table styling
+.table {
+  margin-bottom: 0;
+
+  th {
+    border-top: none;
+    background-color: #f8f9fa;
+    font-weight: 600;
+  }
+
+  td {
+    vertical-align: middle;
+  }
+}
+
+.table-responsive {
+  overflow-x: auto;
+  scroll-behavior: smooth;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+// Status-based row styling
+.overdue-row {
+  background-color: rgba(220, 53, 69, 0.1) !important;
+  
+  &:hover {
+    background-color: rgba(220, 53, 69, 0.15) !important;
+  }
+}
+
+.returned-row {
+  color: #6c757d;
+}
+
+.text-danger {
+  color: #dc3545 !important;
+  animation: pulse 2s infinite;
+}
+
+// Member info styling
+.member-info {
+  border-left: 4px solid #3f51b5;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 0.25rem;
+  margin-bottom: 1.5rem;
+  
+  h4 {
+    color: #1a237e;
+    margin-bottom: 0.5rem;
+  }
+  
+  .member-detail-item {
+    display: inline-flex;
+    margin-right: 1rem;
+    
+    .label {
+      font-weight: 500;
+      color: #6c757d;
+      margin-right: 0.5rem;
+    }
+    
+    .value {
+      font-weight: 400;
+    }
+  }
+}
+
+// Borrowing summary styling
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px dashed #dee2e6;
+  
+  &:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+}
+
+// Filter panel
+.filter-panel .card {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  transition: box-shadow 0.3s ease;
+  
+  &:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+}
+
+.filter-heading {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1a237e;
+  display: flex;
+  align-items: center;
+}
+
+.filter-panel .btn-outline-primary {
+  color: #1a237e;
+  border-color: #1a237e;
+
+  &:hover {
+    background-color: #1a237e;
+    color: #fff;
+  }
+}
+
+// Form styling
+.form-label {
+  font-weight: 500;
+  color: #495057;
+  margin-bottom: 0.5rem;
+}
+
+.form-check-label {
+  color: #495057;
+}
+
+.form-check-input:checked {
+  background-color: #1a237e;
+  border-color: #1a237e;
+}
+
+.form-select:focus,
+.form-control:focus {
+  border-color: #1a237e;
+  box-shadow: 0 0 0 0.25rem rgba(26, 35, 126, 0.25);
+}
+
+// Button styling
+.btn-primary {
+  background-color: #1a237e;
+  border-color: #1a237e;
+
+  &:hover {
+    background-color: #151c5f;
+    border-color: #151c5f;
+  }
+  
+  &:disabled {
+    background-color: #6c757d;
+    border-color: #6c757d;
+  }
+}
+
+.btn-outline-secondary {
+  color: #6c757d;
+  border-color: #6c757d;
+
+  &:hover {
+    color: #fff;
+    background-color: #6c757d;
+    border-color: #6c757d;
+  }
+}
+
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+.btn-info {
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+  color: #fff;
+
+  &:hover {
+    background-color: #138496;
+    border-color: #117a8b;
+  }
+}
+
+.btn-success {
+  background-color: #28a745;
+  border-color: #28a745;
+
+  &:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+  }
+}
+
+// Input group
+.input-group-text {
+  background-color: #e9ecef;
+  border: 1px solid #ced4da;
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start !important;
+
+    div {
+      margin-top: 10px;
+      width: 100%;
+      display: flex;
+      gap: 0.5rem;
+      
+      button {
+        flex: 1;
+      }
+    }
+  }
+
+  .member-info {
+    padding: 0.75rem;
+    
+    .member-detail-item {
+      display: flex;
+      margin-right: 0;
+      margin-bottom: 0.5rem;
+      width: 100%;
+    }
+  }
+  
+  .table th, .table td {
+    padding: 0.5rem;
+  }
+  
+  .d-flex.gap-2 {
+    flex-direction: column;
+    align-items: center;
+    
+    button {
+      margin-bottom: 0.25rem;
+    }
+  }
+}
+
+// Animation for overdue items
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 1;
+  }
+}

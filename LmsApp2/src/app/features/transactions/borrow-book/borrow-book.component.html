@@ -1,0 +1,239 @@
+<div class="container mt-4">
+  <div class="card shadow mb-4">
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+      <h5 class="mb-0 text-primary">
+        <i class="pi pi-shopping-cart me-2"></i>Borrow a Book
+      </h5>
+      <a routerLink="/transactions" class="btn btn-outline-secondary">
+        <i class="pi pi-arrow-left me-2"></i>Back to Transactions
+      </a>
+    </div>
+    
+    <div class="card-body">
+      <!-- Error Message -->
+      <div *ngIf="error" class="alert alert-danger d-flex align-items-center">
+        <i class="pi pi-exclamation-triangle me-2"></i>
+        <div [innerHTML]="error"></div>
+        <button type="button" class="btn-close ms-auto" (click)="error = null" aria-label="Close"></button>
+      </div>
+      
+      <!-- Success Message -->
+      <div *ngIf="success" class="alert alert-success d-flex align-items-center">
+        <i class="pi pi-check-circle me-2"></i>
+        <div>{{ success }}</div>
+      </div>
+      
+      <!-- Loading Indicator -->
+      <div *ngIf="loading || submitting" class="text-center p-3">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2 text-muted">{{ submitting ? 'Processing...' : 'Loading...' }}</p>
+      </div>
+      
+      <form [formGroup]="borrowForm" (ngSubmit)="onSubmit()" *ngIf="!loading && !submitting && !success">
+        <div class="row">
+          <!-- Book Selection Section -->
+          <div class="col-md-6 mb-4">
+            <div class="card h-100">
+              <div class="card-header">
+                <h5 class="mb-0">Book Information</h5>
+              </div>
+              <div class="card-body">
+                <!-- Book Search Input -->
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Search for Book</mat-label>
+                  <input 
+                    matInput 
+                    formControlName="bookSearchTerm" 
+                    placeholder="Enter book title, author, or ISBN"
+                    (input)="searchBooks()" 
+                    [matAutocomplete]="bookAuto">
+                  <mat-icon matSuffix *ngIf="!bookSearchLoading">search</mat-icon>
+                  <mat-spinner matSuffix diameter="20" *ngIf="bookSearchLoading"></mat-spinner>
+                  <mat-error *ngIf="borrowForm.get('bookSearchTerm')?.hasError('required') && borrowForm.get('bookSearchTerm')?.touched">
+                    Book search term is required
+                  </mat-error>
+                  <mat-autocomplete #bookAuto="matAutocomplete" [displayWith]="displayBookFn">
+                    <mat-option *ngIf="bookSearchLoading" class="loading-option">
+                      <mat-spinner diameter="20"></mat-spinner> Searching books...
+                    </mat-option>
+                    <mat-option *ngIf="filteredBooks.length === 0 && !bookSearchLoading && borrowForm.get('bookSearchTerm')?.value" class="no-results-option">
+                      No books found
+                    </mat-option>
+                    <mat-option *ngFor="let book of filteredBooks" [value]="book" (onSelectionChange)="onBookSelected(book)">
+                      {{ book.title }} by {{ book.author }} (Available: {{ book.availableCopies }})
+                    </mat-option>
+                  </mat-autocomplete>
+                </mat-form-field>
+                
+                <!-- Hidden Book ID field -->
+                <input type="hidden" formControlName="bookId">
+                
+                <!-- Book Details (when selected) -->
+                <div *ngIf="selectedBook" class="selected-book-details mt-3">
+                  <h3 class="book-title">{{ selectedBook.title }}</h3>
+                  <p class="book-author">by {{ selectedBook.author }}</p>
+                  <div class="d-flex align-items-center mb-2">
+                    <span class="badge bg-info me-2">{{ selectedBook.genre }}</span>
+                    <small class="text-muted">ISBN: {{ selectedBook.isbn }}</small>
+                  </div>
+                  <div class="availability-section">
+                    <div class="d-flex align-items-center">
+                      <span class="badge me-2" 
+                            [ngClass]="selectedBook.availableCopies > 0 ? 'bg-success' : 'bg-danger'">
+                        {{ selectedBook.availableCopies > 0 ? 'Available' : 'Not Available' }}
+                      </span>
+                      <span class="text-muted">
+                        {{ selectedBook.availableCopies }} {{ selectedBook.availableCopies === 1 ? 'copy' : 'copies' }} available
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- No Book Selected Message -->
+                <div *ngIf="!selectedBook" class="text-center p-4 text-muted">
+                  <i class="pi pi-book" style="font-size: 2rem; opacity: 0.5;"></i>
+                  <p class="mt-2">Search and select a book to borrow</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Member Selection Section -->
+          <div class="col-md-6 mb-4">
+            <div class="card h-100">
+              <div class="card-header">
+                <h5 class="mb-0">Member Information</h5>
+              </div>
+              <div class="card-body">
+                <!-- Member Search Input -->
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Search for Member</mat-label>
+                  <input 
+                    matInput 
+                    formControlName="memberSearchTerm" 
+                    placeholder="Enter member name, email, or ID"
+                    (input)="searchMembers()" 
+                    [matAutocomplete]="memberAuto">
+                  <mat-icon matSuffix *ngIf="!memberSearchLoading">search</mat-icon>
+                  <mat-spinner matSuffix diameter="20" *ngIf="memberSearchLoading"></mat-spinner>
+                  <mat-error *ngIf="borrowForm.get('memberSearchTerm')?.hasError('required') && borrowForm.get('memberSearchTerm')?.touched">
+                    Member search term is required
+                  </mat-error>
+                  <mat-autocomplete #memberAuto="matAutocomplete" [displayWith]="displayMemberFn">
+                    <mat-option *ngIf="memberSearchLoading" class="loading-option">
+                      <mat-spinner diameter="20"></mat-spinner> Searching members...
+                    </mat-option>
+                    <mat-option *ngIf="filteredMembers.length === 0 && !memberSearchLoading && borrowForm.get('memberSearchTerm')?.value" class="no-results-option">
+                      No members found
+                    </mat-option>
+                    <mat-option *ngFor="let member of filteredMembers" [value]="member" (onSelectionChange)="onMemberSelected(member)">
+                      {{ member.name }} ({{ member.email || 'No email' }})
+                    </mat-option>
+                  </mat-autocomplete>
+                </mat-form-field>
+                
+                <!-- Hidden Member ID field -->
+                <input type="hidden" formControlName="memberId">
+                
+                <!-- Member Details (when selected) -->
+                <div *ngIf="selectedMember" class="selected-member-details mt-3">
+                  <h3 class="member-name">{{ selectedMember.name }}</h3>
+                  <p class="member-email">{{ selectedMember.email }}</p>
+                  <div class="d-flex align-items-center mb-2">
+                    <span class="badge me-2" 
+                          [ngClass]="selectedMember.membershipStatus === 'Active' ? 'bg-success' : 'bg-danger'">
+                      {{ selectedMember.membershipStatus }}
+                    </span>
+                    <small class="text-muted">Member ID: {{ selectedMember.memberID }}</small>
+                  </div>
+                  
+                  <!-- Borrowing Status (when available) -->
+                  <div *ngIf="memberBorrowingStatus" class="borrowing-status mt-3">
+                    <p>
+                      <strong>Current Borrowings:</strong> 
+                      <span [class.text-warning]="memberBorrowingStatus.currentBorrowings > 3">
+                        {{ memberBorrowingStatus.currentBorrowings }} / {{ memberBorrowingStatus.maxAllowedBorrowings }}
+                      </span>
+                    </p>
+                    <p>
+                      <strong>Has Overdue Items:</strong>
+                      <span [class.text-danger]="memberBorrowingStatus.hasOverdueItems">
+                        {{ memberBorrowingStatus.hasOverdueItems ? 'Yes' : 'No' }}
+                      </span>
+                    </p>
+                    <p>
+                      <strong>Can Borrow:</strong>
+                      <span [class.text-success]="memberBorrowingStatus.canBorrow" 
+                            [class.text-danger]="!memberBorrowingStatus.canBorrow">
+                        {{ memberBorrowingStatus.canBorrow ? 'Yes' : 'No' }}
+                      </span>
+                    </p>
+                    <p *ngIf="!memberBorrowingStatus.canBorrow" class="text-danger fw-bold">
+                      {{ memberBorrowingStatus.reasonCannotBorrow }}
+                    </p>
+                  </div>
+                </div>
+                
+                <!-- No Member Selected Message -->
+                <div *ngIf="!selectedMember" class="text-center p-4 text-muted">
+                  <i class="pi pi-user" style="font-size: 2rem; opacity: 0.5;"></i>
+                  <p class="mt-2">{{ canChangeDate() ? 'Search and select a member' : 'Member information will be populated automatically' }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Borrowing Details Section -->
+        <div class="row">
+          <div class="col-12 mb-4">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="mb-0">Borrowing Details</h5>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <!-- Borrow Date Picker -->
+                  <div class="col-md-6 mb-3">
+                    <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>Borrow Date</mat-label>
+                      <input matInput [matDatepicker]="borrowPicker" formControlName="borrowDate" 
+                             [disabled]="!canChangeDate()" placeholder="Select borrow date">
+                      <mat-datepicker-toggle matSuffix [for]="borrowPicker" [disabled]="!canChangeDate()"></mat-datepicker-toggle>
+                      <mat-datepicker #borrowPicker></mat-datepicker>
+                      <mat-error *ngIf="borrowForm.get('borrowDate')?.invalid">Borrow date is required</mat-error>
+                    </mat-form-field>
+                  </div>
+                  
+                  <!-- Due Date Display (calculated, not editable) -->
+                  <div class="col-md-6 mb-3">
+                    <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>Due Date</mat-label>
+                      <input matInput [value]="dueDate | date:'mediumDate'" disabled title="Due Date" placeholder="Due Date">
+                      <mat-hint>Books are due 14 days after borrowing</mat-hint>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Form Actions -->
+        <div class="d-flex justify-content-between mt-3">
+          <button type="button" class="btn btn-outline-secondary" (click)="resetForm()">
+            <i class="pi pi-refresh me-2"></i>Reset
+          </button>
+          
+          <button type="submit" class="btn btn-primary" 
+                  [disabled]="borrowForm.invalid || (selectedBook && selectedBook.availableCopies <= 0) || 
+                             (memberBorrowingStatus && !memberBorrowingStatus.canBorrow)">
+            <i class="pi pi-check me-2"></i>Borrow Book
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

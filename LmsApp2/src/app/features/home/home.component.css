@@ -1,0 +1,357 @@
+.home-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.header {
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    padding: 2rem;
+    background-color: #f5f5f5;
+}
+
+.header h1 {
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.main-content {
+    flex: 1;
+    padding: 2rem;
+}
+
+.features {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.features h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.feature-card {
+    padding: 1.5rem;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+
+.feature-card h3 {
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.feature-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stats {
+    background-color: #f8f9fa;
+}
+
+.stat-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.footer {
+    text-align: center;
+    padding: 1rem;
+    background-color: #333;
+    color: white;
+    margin-top: auto;
+}
+
+.footer a {
+    text-decoration: none;
+    margin: 0 10px;
+    transition: color 0.3s ease;
+}
+
+.footer a:hover {
+    color: #ccc !important;
+}
+
+.list-inline-item:not(:last-child):after {
+    content: '|';
+    margin-left: 10px;
+    opacity: 0.5;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .header {
+        text-align: center;
+        padding: 3rem 1rem;
+    }
+    
+    .header h1 {
+        font-size: 2.5rem;
+    }
+}
+
+.hero {
+    background-color: #f8f9fa;
+    padding: 2rem;
+    border-radius: 8px;
+}
+
+.book-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    cursor: pointer;
+    border: 1px solid #e0e0e0;
+    border-radius: 0.5rem;
+    background: #fff;
+}
+
+.book-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.book-card.unavailable {
+    opacity: 0.7;
+}
+
+.book-card .badge.bg-success {
+    background-color: #388e3c !important; /* Material green */
+    color: #fff !important;
+}
+.book-card .badge.bg-danger {
+    background-color: #d32f2f !important; /* Material red */
+    color: #fff !important;
+}
+.book-card .badge.bg-info {
+    background-color: #ffc107 !important; /* Accent gold */
+    color: #212529 !important;
+}
+
+.book-cover-container {
+    position: relative;
+    height: 200px;
+    background-color: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.book-cover {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.book-cover i {
+    font-size: 4rem;
+    color: #6c757d;
+    opacity: 0.4;
+}
+
+.card-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-subtitle {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.9rem;
+}
+
+.dropdown-menu {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.btn-primary {
+    background-color: #1a237e;
+    border-color: #1a237e;
+}
+.btn-primary:hover {
+    background-color: #3949ab;
+    border-color: #3949ab;
+}
+
+.home-header {
+    background: linear-gradient(90deg, #2C3E50 0%, #FFA000 100%);
+    color: #fff;
+    margin-bottom: 2rem;
+    border-radius: 0 0 1.5rem 1.5rem;
+}
+
+.search-bar input {
+    border-radius: 0.5rem;
+    border: 1px solid #ddd;
+    padding: 1rem;
+    font-size: 1.1rem;
+}
+
+.featured-book-card {
+    min-height: 220px;
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+    background: #fff;
+    transition: box-shadow 0.2s;
+}
+
+.featured-book-card:hover {
+    box-shadow: 0 4px 16px rgba(44,62,80,0.15);
+    cursor: pointer;
+}
+
+.badge {
+    font-size: 0.9em;
+    padding: 0.3em 0.7em;
+    border-radius: 0.5em;
+}
+
+/* Library Information Panel */
+.library-info-panel {
+  background-color: #f8f9fa;
+  padding: 1.5rem 0;
+  border-radius: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.info-card {
+  display: flex;
+  align-items: center;
+  padding: 1.25rem;
+  background-color: #fff;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  height: 100%;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.info-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.icon-bg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  margin-right: 1rem;
+  color: white;
+}
+
+.icon-bg i {
+  font-size: 1.5rem;
+}
+
+.info-content h4 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.info-content p {
+  margin: 0;
+  color: #6c757d;
+}
+
+/* Search Results */
+.search-results-container {
+  background-color: #fff;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  padding: 1rem;
+  text-align: left;
+}
+
+.search-results-header h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.search-result-item {
+  transition: transform 0.2s;
+  border-left: 3px solid transparent;
+  margin-bottom: 0.5rem;
+}
+
+.search-result-item:hover {
+  transform: translateX(5px);
+  border-left-color: #1a237e;
+}
+
+.search-result-item h5 {
+  font-size: 1rem;
+  margin-bottom: 0.2rem;
+}
+
+.search-result-item p {
+  font-size: 0.9rem;
+  margin-bottom: 0;
+  color: #666;
+}
+
+.no-results {
+  background-color: #f8f9fa;
+  border-radius: 0.5rem;
+}
+
+/* Quick access card styling */
+.quick-access-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.quick-access-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+
+.quick-access-card .icon-container {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quick-access-card .card-title {
+    color: #333;
+    font-weight: 600;
+}
+
+.quick-access-card .card-text {
+    color: #666;
+    margin-bottom: 1.5rem;
+}
+
+/* Add some padding and margin for better spacing */
+.quick-access-card .card-body {
+    padding: 1.5rem;
+}

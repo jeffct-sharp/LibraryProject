@@ -1,0 +1,58 @@
+<div class="auth-container">
+  <mat-card class="auth-card">
+    <mat-card-header>
+      <mat-card-title>Login to Your Account</mat-card-title>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <!-- Email Field -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" placeholder="Enter your email" type="email">
+          <mat-icon matSuffix>email</mat-icon>
+          <mat-error *ngIf="f['email'].errors && f['email'].errors['required']">Email is required</mat-error>
+          <mat-error *ngIf="f['email'].errors && f['email'].errors['email']">Please enter a valid email address</mat-error>
+        </mat-form-field>
+        
+        <!-- Password Field -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Password</mat-label>
+          <input matInput formControlName="password" [type]="hide ? 'password' : 'text'" placeholder="Enter your password">
+          <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide" type="button">
+            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+          <mat-error *ngIf="f['password'].errors && f['password'].errors['required']">Password is required</mat-error>
+          <mat-error *ngIf="f['password'].errors && f['password'].errors['minlength']">Password must be at least 8 characters</mat-error>
+        </mat-form-field>
+        
+        <!-- Error Message -->
+        <div *ngIf="error" class="error-message">
+          <mat-icon>error_outline</mat-icon>
+          <span>{{ error }}</span>
+        </div>
+        
+        <!-- Success Message -->
+        <div *ngIf="success" class="success-message">
+          Login successful! Redirecting...
+        </div>
+        
+        <!-- Submit Button -->
+        <div class="button-row">
+          <button mat-raised-button color="primary" type="submit" [disabled]="loading" class="full-width">
+            <mat-spinner *ngIf="loading" diameter="20" class="spinner"></mat-spinner>
+            <span *ngIf="!loading">Login</span>
+          </button>
+        </div>
+      </form>
+      
+      <!-- Register Link and Back Button -->
+      <div class="additional-options">
+        <span>Don't have an account? <a mat-button color="primary" (click)="navigateToRegister()">Register here</a></span>
+        <button mat-button color="basic" (click)="navigateToHome()">
+          <mat-icon>arrow_back</mat-icon> Back to Home
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

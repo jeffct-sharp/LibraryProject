@@ -1,0 +1,177 @@
+// Table column styling
+.mat-column-transactionID {
+  width: 80px;
+}
+
+.mat-column-overdueDays,
+.mat-column-potentialFine {
+  width: 120px;
+  text-align: center;
+}
+
+.mat-column-actions {
+  width: 100px;
+  text-align: center;
+}
+
+// Table styles
+.table-responsive {
+  overflow-x: auto;
+  margin-bottom: 20px;
+  
+  .mat-table {
+    width: 100%;
+    
+    .mat-row {
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.04);
+      }
+    }
+  }
+}
+
+// Overdue days severity styling
+.mild-overdue {
+  color: #f57c00; // Orange
+}
+
+.moderate-overdue {
+  color: #e53935; // Red
+  font-weight: 500;
+}
+
+.severe-overdue {
+  color: #b71c1c; // Dark red
+  font-weight: 700;
+  animation: pulse 2s infinite;
+}
+
+// Returned row styling
+.returned-row {
+  background-color: rgba(76, 175, 80, 0.05);
+  
+  .mat-cell {
+    color: #757575;
+  }
+}
+
+// Animation for severe overdue
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+// Stats cards styling
+.stats-card {
+  border: none;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+  }
+  
+  .icon-circle {
+    height: 3rem;
+    width: 3rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    i {
+      font-size: 1.5rem;
+    }
+  }
+}
+
+// Filter card styling
+.filter-card {
+  border: none;
+  border-radius: 0.5rem;
+  background-color: #f8f9fa;
+  transition: all 0.3s ease;
+  
+  .card-title {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 1rem;
+  }
+}
+
+// Card styling
+.card {
+  border: none;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  
+  .card-header {
+    background-color: #fff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  }
+}
+
+// Text color classes
+.text-danger {
+  color: #dc3545 !important;
+}
+
+.text-warning {
+  color: #ffc107 !important;
+}
+
+.text-info {
+  color: #17a2b8 !important;
+}
+
+.text-success {
+  color: #28a745 !important;
+}
+
+// Responsive improvements
+@media (max-width: 767.98px) {
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start !important;
+    
+    div {
+      margin-top: 1rem;
+      width: 100%;
+      display: flex;
+      gap: 0.5rem;
+      
+      button {
+        flex: 1;
+      }
+    }
+  }
+  
+  .mat-table {
+    min-width: 800px;
+  }
+}
+
+// Checkbox styling
+.mat-checkbox {
+  margin-left: 0.5rem;
+}
+
+// Fix mat-table width
+.w-100 {
+  width: 100%;
+}
+
+// Fix for pagination controls
+.mat-paginator {
+  background: transparent;
+}

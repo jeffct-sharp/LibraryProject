@@ -1,0 +1,161 @@
+<div class="container mt-4">
+  <div class="card shadow">
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+      <h5 class="mb-0 text-primary">
+        <i class="pi" [ngClass]="isEditMode ? 'pi-pencil' : 'pi-plus-circle'"></i>
+        <span class="ms-2">{{ isEditMode ? 'Edit' : 'Create New' }} Fine</span>
+      </h5>
+      <button class="btn btn-outline-secondary" (click)="cancel()">
+        <i class="pi pi-arrow-left me-2"></i>Back to Fines
+      </button>
+    </div>
+    
+    <div class="card-body">
+      <div *ngIf="error" class="alert alert-danger">
+        <i class="pi pi-exclamation-triangle me-2"></i>{{ error }}
+      </div>
+      
+      <div *ngIf="success" class="alert alert-success">
+        <i class="pi pi-check-circle me-2"></i>Fine {{ isEditMode ? 'updated' : 'created' }} successfully! Redirecting...
+      </div>
+      
+      <!-- Loading Spinner -->
+      <div *ngIf="loading" class="text-center p-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2 text-muted">{{ isEditMode ? 'Loading fine details...' : 'Creating fine...' }}</p>
+      </div>
+      
+      <form [formGroup]="fineForm" (ngSubmit)="onSubmit()" *ngIf="!loading && !success">
+        <!-- Member Selection -->
+        <div class="mb-4">
+          <label class="form-label">Select Member <span class="text-danger">*</span></label>
+          <div class="position-relative">
+            <!-- Replace MatAutocomplete with a simple dropdown for now -->
+            <div class="input-group mb-3">
+              <input 
+                type="text" 
+                class="form-control"
+                formControlName="memberSearch"
+                placeholder="Search for member by name or ID"
+                [readonly]="isEditMode">
+              <button 
+                class="btn btn-outline-secondary" 
+                type="button"
+                [disabled]="isEditMode"
+                title="Search for member">
+                <i class="pi pi-search"></i>
+              </button>
+            </div>
+            
+            <div *ngIf="memberSearchResults.length > 0" class="list-group position-absolute w-100 z-index-dropdown">
+              <button 
+                *ngFor="let member of memberSearchResults" 
+                type="button"
+                class="list-group-item list-group-item-action"
+                (click)="selectMember(member)">
+                {{ member.name }} ({{ member.email || 'No email' }})
+              </button>
+            </div>
+          </div>
+          
+          <div *ngIf="selectedMember" class="card mb-3">
+            <div class="card-body">
+              <h6 class="mb-1">{{ selectedMember.name }}</h6>
+              <p class="text-muted mb-0">{{ selectedMember.email || 'No email' }}</p>
+              <p class="mb-0">
+                <span class="badge" 
+                     [ngClass]="{'bg-success': selectedMember.membershipStatus === 'Active', 
+                                'bg-danger': selectedMember.membershipStatus === 'Suspended'}">
+                  {{ selectedMember.membershipStatus }}
+                </span>
+              </p>
+            </div>
+          </div>
+          
+          <div *ngIf="fineForm.get('memberId')?.invalid && fineForm.get('memberId')?.touched" class="text-danger small">
+            Member selection is required.
+          </div>
+        </div>
+        
+        <!-- Fine Details -->
+        <div class="row mb-4">
+          <div class="col-md-6 mb-3">
+            <label for="amount" class="form-label">Amount (₹) <span class="text-danger">*</span></label>
+            <input 
+              type="number" 
+              id="amount" 
+              formControlName="amount" 
+              class="form-control"
+              [ngClass]="{'is-invalid': fineForm.get('amount')?.invalid && fineForm.get('amount')?.touched}">
+            <div *ngIf="fineForm.get('amount')?.invalid && fineForm.get('amount')?.touched" class="invalid-feedback">
+              <div *ngIf="fineForm.get('amount')?.errors?.['required']">Amount is required.</div>
+              <div *ngIf="fineForm.get('amount')?.errors?.['min']">Amount must be at least ₹10.</div>
+              <div *ngIf="fineForm.get('amount')?.errors?.['max']">Amount cannot exceed ₹300.</div>
+            </div>
+          </div>
+          
+          <div class="col-md-6 mb-3">
+            <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
+            <select 
+              id="status" 
+              formControlName="status" 
+              class="form-select"
+              [ngClass]="{'is-invalid': fineForm.get('status')?.invalid && fineForm.get('status')?.touched}">
+              <option value="Pending">Pending</option>
+              <option value="Paid">Paid</option>
+            </select>
+            <div *ngIf="fineForm.get('status')?.invalid && fineForm.get('status')?.touched" class="invalid-feedback">
+              Status is required.
+            </div>
+          </div>
+          
+          <div class="col-md-6 mb-3">
+            <label for="transactionDate" class="form-label">Transaction Date <span class="text-danger">*</span></label>
+            <input 
+              type="date" 
+              id="transactionDate" 
+              formControlName="transactionDate" 
+              class="form-control"
+              [ngClass]="{'is-invalid': fineForm.get('transactionDate')?.invalid && fineForm.get('transactionDate')?.touched}">
+            <div *ngIf="fineForm.get('transactionDate')?.invalid && fineForm.get('transactionDate')?.touched" class="invalid-feedback">
+              Transaction date is required.
+            </div>
+          </div>
+          
+          <div class="col-md-6 mb-3">
+            <label for="reason" class="form-label">Reason <span class="text-danger">*</span></label>
+            <textarea 
+              id="reason" 
+              formControlName="reason" 
+              class="form-control" 
+              rows="3"
+              [ngClass]="{'is-invalid': fineForm.get('reason')?.invalid && fineForm.get('reason')?.touched}"></textarea>
+            <div *ngIf="fineForm.get('reason')?.invalid && fineForm.get('reason')?.touched" class="invalid-feedback">
+              <div *ngIf="fineForm.get('reason')?.errors?.['required']">Reason is required.</div>
+              <div *ngIf="fineForm.get('reason')?.errors?.['maxlength']">Reason cannot exceed 200 characters.</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Form Actions -->
+        <div class="d-flex justify-content-between">
+          <button type="button" class="btn btn-outline-secondary" (click)="resetForm()">
+            <i class="pi pi-refresh me-2"></i>Reset
+          </button>
+          
+          <div>
+            <button type="button" class="btn btn-outline-secondary me-2" (click)="cancel()">
+              <i class="pi pi-times me-2"></i>Cancel
+            </button>
+            <button type="submit" class="btn btn-primary" [disabled]="fineForm.invalid">
+              <i class="pi" [ngClass]="isEditMode ? 'pi-save' : 'pi-plus-circle'"></i>
+              <span class="ms-2">{{ isEditMode ? 'Update' : 'Create' }} Fine</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

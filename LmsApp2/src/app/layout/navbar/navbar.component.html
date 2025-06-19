@@ -1,0 +1,88 @@
+<mat-toolbar class="navbar">
+  <div class="navbar-container">
+    <!-- Left side of navbar -->
+    <div class="navbar-left">
+      <button mat-icon-button (click)="onToggleSidebar()" class="menu-button">
+        <mat-icon>menu</mat-icon>
+      </button>
+      
+      <div class="navbar-brand" routerLink="/">
+        <img src="assets/images/logo.png" alt="LMS Logo" class="logo-img">
+        <span class="logo-text">LibraryMS</span>
+      </div>
+      
+      <!-- Quick Navigation -->
+      <div class="quick-nav">
+        <a mat-button routerLink="/books" class="nav-link">
+          <mat-icon>book</mat-icon> Books
+        </a>
+        <a mat-button routerLink="/members" *ngIf="isLoggedIn && canAccessMembers()" class="nav-link">
+          <mat-icon>people</mat-icon> Members
+        </a>
+        <a mat-button routerLink="/transactions" *ngIf="isLoggedIn && canAccessTransactions()" class="nav-link">
+          <mat-icon>swap_horiz</mat-icon> Transactions
+        </a>
+      </div>
+    </div>
+    
+    <!-- Right side of navbar -->
+    <div class="navbar-right">
+      <!-- Removed search button -->
+      
+      <!-- Notification badge -->
+      <button *ngIf="isLoggedIn" mat-icon-button class="notification-button" (click)="goToMyNotifications()">
+        <mat-icon 
+          [matBadge]="unreadNotifications" 
+          [matBadgeHidden]="unreadNotifications === 0"
+          matBadgeColor="warn"
+          matBadgeSize="small"
+          aria-hidden="false">
+          notifications
+        </mat-icon>
+      </button>
+      
+      <!-- User menu -->
+      <div *ngIf="isLoggedIn" class="user-menu">
+        <button mat-button [matMenuTriggerFor]="userMenu" class="user-button">
+          <div class="user-avatar">
+            <mat-icon>person</mat-icon>
+          </div>
+          <div class="user-info">
+            <span class="username">{{ username }}</span>
+            <span class="role-badge" [ngClass]="userRole.toLowerCase()">{{ userRole }}</span>
+          </div>
+          <mat-icon>arrow_drop_down</mat-icon>
+        </button>
+        
+        <mat-menu #userMenu="matMenu">
+          <button mat-menu-item (click)="goToProfile()">
+            <mat-icon>account_circle</mat-icon>
+            <span>My Profile</span>
+          </button>
+          <button mat-menu-item (click)="goToMyNotifications()">
+            <mat-icon>notifications</mat-icon>
+            <span>My Notifications</span>
+            <span *ngIf="unreadNotifications > 0" class="menu-badge">{{ unreadNotifications }}</span>
+          </button>
+          <mat-divider></mat-divider>
+          <button mat-menu-item (click)="logout()">
+            <mat-icon>exit_to_app</mat-icon>
+            <span>Logout</span>
+          </button>
+        </mat-menu>
+      </div>
+      
+      <!-- Login/Register links when not logged in -->
+      <div *ngIf="!isLoggedIn" class="auth-links">
+        <a mat-button routerLink="/auth/login">
+          <mat-icon>login</mat-icon>
+          Login
+        </a>
+        <a mat-button routerLink="/auth/register">
+          <mat-icon>person_add</mat-icon>
+          Register
+        </a>
+      </div>
+    </div>
+  </div>
+</mat-toolbar>

@@ -1,0 +1,109 @@
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header">
+      <h3>{{ isEditMode ? 'Edit' : 'Add' }} Book</h3>
+    </div>
+    <div class="card-body">
+      <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+      
+      <div *ngIf="loading" class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+      
+      <form [formGroup]="bookForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
+        <div class="form-group">
+          <label for="title">Title</label>
+          <input 
+            type="text"
+            id="title"
+            formControlName="title"
+            class="form-control"
+            [ngClass]="{'is-invalid': bookForm.get('title')?.invalid && bookForm.get('title')?.touched}"
+          >
+          <div class="invalid-feedback" *ngIf="bookForm.get('title')?.errors?.['required'] && bookForm.get('title')?.touched">
+            Title is required
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="author">Author</label>
+          <input 
+            type="text"
+            id="author"
+            formControlName="author"
+            class="form-control"
+            [ngClass]="{'is-invalid': bookForm.get('author')?.invalid && bookForm.get('author')?.touched}"
+          >
+          <div class="invalid-feedback" *ngIf="bookForm.get('author')?.errors?.['required'] && bookForm.get('author')?.touched">
+            Author is required
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="genre">Genre</label>
+          <input 
+            type="text"
+            id="genre"
+            formControlName="genre"
+            class="form-control"
+            [ngClass]="{'is-invalid': bookForm.get('genre')?.invalid && bookForm.get('genre')?.touched}"
+          >
+          <div class="invalid-feedback" *ngIf="bookForm.get('genre')?.errors?.['required'] && bookForm.get('genre')?.touched">
+            Genre is required
+          </div>
+        </div>
+        
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>ISBN</mat-label>
+          <input matInput formControlName="isbn" placeholder="Enter 13-digit ISBN">
+          <mat-error *ngIf="bookForm.get('isbn')?.hasError('required')">ISBN is required</mat-error>
+          <mat-error *ngIf="bookForm.get('isbn')?.hasError('pattern')">ISBN must be exactly 13 digits</mat-error>
+        </mat-form-field>
+        
+        <div class="form-group">
+          <label for="yearPublished">Year Published</label>
+          <input 
+            type="number"
+            id="yearPublished"
+            formControlName="yearPublished"
+            class="form-control"
+            [ngClass]="{'is-invalid': bookForm.get('yearPublished')?.invalid && bookForm.get('yearPublished')?.touched}"
+          >
+          <div class="invalid-feedback" *ngIf="bookForm.get('yearPublished')?.errors?.['required'] && bookForm.get('yearPublished')?.touched">
+            Year Published is required
+          </div>
+          <div class="invalid-feedback" *ngIf="bookForm.get('yearPublished')?.errors?.['min'] && bookForm.get('yearPublished')?.touched">
+            Year must be 1000 or later
+          </div>
+          <div class="invalid-feedback" *ngIf="bookForm.get('yearPublished')?.errors?.['max'] && bookForm.get('yearPublished')?.touched">
+            Year cannot be in the future
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="availableCopies">Available Copies</label>
+          <input 
+            type="number"
+            id="availableCopies"
+            formControlName="availableCopies"
+            class="form-control"
+            [ngClass]="{'is-invalid': bookForm.get('availableCopies')?.invalid && bookForm.get('availableCopies')?.touched}"
+          >
+          <div class="invalid-feedback" *ngIf="bookForm.get('availableCopies')?.errors?.['required'] && bookForm.get('availableCopies')?.touched">
+            Available Copies is required
+          </div>
+          <div class="invalid-feedback" *ngIf="bookForm.get('availableCopies')?.errors?.['min'] && bookForm.get('availableCopies')?.touched">
+            Available Copies cannot be negative
+          </div>
+        </div>
+        
+        <div class="form-group mt-4">
+          <button type="submit" class="btn btn-primary" [disabled]="bookForm.invalid">Save</button>
+          <a [routerLink]="['/books']" class="btn btn-secondary ml-2">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

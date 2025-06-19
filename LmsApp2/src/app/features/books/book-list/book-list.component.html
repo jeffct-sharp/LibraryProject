@@ -1,0 +1,129 @@
+<div class="container mt-4">
+  <div class="card shadow mb-4">
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+      <h5 class="mb-0 text-primary">
+        <i class="pi pi-book me-2"></i>Book Collection
+      </h5>
+      <a *ngIf="isAdminOrLibrarian()" [routerLink]="['/books/add']" class="btn btn-primary">
+        <i class="pi pi-plus me-2"></i>Add New Book
+      </a>
+    </div>
+    <div class="card-body">
+      <div class="row mb-4">
+        <div class="col-md-8">
+          <div class="input-group">
+            <span class="input-group-text">
+              <i class="pi pi-search"></i>
+            </span>
+            <input 
+              type="text" 
+              class="form-control" 
+              placeholder="Search books by title, author, or genre..." 
+              [(ngModel)]="searchTerm"
+              (keyup.enter)="searchBooks()">
+            <button class="btn btn-primary" (click)="searchBooks()">Search</button>
+            <button class="btn btn-outline-secondary" (click)="resetFilters()">
+              <i class="pi pi-refresh me-1"></i>Reset
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="error" class="alert alert-danger d-flex align-items-center">
+        <i class="pi pi-exclamation-triangle me-2"></i>
+        <div>{{ error }}</div>
+      </div>
+      
+      <div *ngIf="loading" class="text-center p-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2 text-muted">Loading books...</p>
+      </div>
+
+      <div *ngIf="!loading" class="table-container">
+        <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z2 w-100">
+          <!-- Title Column -->
+          <ng-container matColumnDef="title">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Title </th>
+            <td mat-cell *matCellDef="let book"> {{book.title}} </td>
+          </ng-container>
+
+          <!-- Author Column -->
+          <ng-container matColumnDef="author">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Author </th>
+            <td mat-cell *matCellDef="let book"> {{book.author}} </td>
+          </ng-container>
+
+          <!-- Genre Column -->
+          <ng-container matColumnDef="genre">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Genre </th>
+            <td mat-cell *matCellDef="let book">
+              <span class="badge bg-info text-dark">{{ book.genre }}</span>
+            </td>
+          </ng-container>
+
+          <!-- ISBN Column -->
+          <ng-container matColumnDef="isbn">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> ISBN </th>
+            <td mat-cell *matCellDef="let book"> <code>{{book.isbn}}</code> </td>
+          </ng-container>
+
+          <!-- Year Published Column -->
+          <ng-container matColumnDef="yearPublished">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Year </th>
+            <td mat-cell *matCellDef="let book"> {{book.yearPublished}} </td>
+          </ng-container>
+
+          <!-- Available Copies Column -->
+          <ng-container matColumnDef="availableCopies">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Available </th>
+            <td mat-cell *matCellDef="let book">
+              <app-book-availability 
+                [availableCopies]="book.availableCopies" 
+                size="small" 
+                [showCount]="true">
+              </app-book-availability>
+            </td>
+          </ng-container>
+
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef class="text-center"> Actions </th>
+            <td mat-cell *matCellDef="let book">
+              <div class="d-flex justify-content-center gap-1">
+                <a [routerLink]="['/books', book.bookID]" class="btn btn-sm btn-info">
+                  <i class="pi pi-eye"></i>
+                </a>
+                <a *ngIf="isAdminOrLibrarian()" [routerLink]="['/books/edit', book.bookID]" class="btn btn-sm btn-primary">
+                  <i class="pi pi-pencil"></i>
+                </a>
+                <button *ngIf="isAdminOrLibrarian()" (click)="deleteBook(book.bookID)" class="btn btn-sm btn-danger" title="Delete book">
+                  <i class="pi pi-trash"></i>
+                </button>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+          <!-- No data row -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell text-center py-4" [attr.colspan]="displayedColumns.length">
+              No books found matching your criteria.
+            </td>
+          </tr>
+        </table>
+
+        <!-- Paginator -->
+        <mat-paginator 
+          [pageSizeOptions]="paginationOptions.pageSizeOptions"
+          [pageSize]="paginationOptions.pageSize"
+          showFirstLastButtons
+          aria-label="Select page of books">
+        </mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>

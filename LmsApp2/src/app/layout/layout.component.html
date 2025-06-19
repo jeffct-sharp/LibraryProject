@@ -1,0 +1,21 @@
+<div class="layout-container">
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav 
+      #drawer 
+      class="sidenav" 
+      fixedInViewport
+      [mode]="(isHandset$ | async) ? 'over' : 'side'"
+      [opened]="(isHandset$ | async) === false">
+      <app-side-navbar></app-side-navbar>
+    </mat-sidenav>
+    
+    <mat-sidenav-content>
+      <!-- Moved navbar inside mat-sidenav-content for better flexibility -->
+      <app-navbar (toggleSidebar)="toggleSidebar()"></app-navbar>
+      
+      <div class="content-container" (click)="closeSidenavOnMobile()">
+        <router-outlet></router-outlet>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

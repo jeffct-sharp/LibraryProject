@@ -1,0 +1,50 @@
+.text-warning {
+  color: #f57c00 !important;
+}
+
+.btn-primary {
+  background-color: #1a237e;
+  border-color: #1a237e;
+}
+
+.btn-primary:hover {
+  background-color: #303f9f;
+  border-color: #303f9f;
+}
+
+.card {
+  border: none;
+  border-radius: 10px;
+}
+
+.not-found-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  padding: 20px;
+}
+
+.error-code {
+  font-size: 72px;
+  font-weight: 700;
+  color: #3f51b5;
+  margin-bottom: 0;
+}
+
+.error-icon {
+  font-size: 56px;
+  height: 56px;
+  width: 56px;
+  color: #3f51b5;
+}
+
+h2 {
+  color: #333;
+  font-weight: 500;
+}
+
+.lead {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}

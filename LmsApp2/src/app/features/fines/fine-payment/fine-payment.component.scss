@@ -1,0 +1,160 @@
+// Card styling
+.card {
+  border: none;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  border-radius: 0.5rem;
+  
+  .card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    
+    h6 {
+      font-weight: 600;
+      color: #1a237e;
+    }
+  }
+}
+
+// Table styling
+.table {
+  margin-bottom: 0;
+  
+  th {
+    width: 35%;
+    color: #495057;
+    background-color: #f8f9fa;
+  }
+  
+  .fw-bold {
+    color: #dc3545;
+    font-weight: 700;
+  }
+}
+
+// Form styling
+.form-label {
+  font-weight: 500;
+  color: #495057;
+  margin-bottom: 0.5rem;
+}
+
+.form-control:disabled, 
+.form-control[readonly] {
+  background-color: #f8f9fa;
+  opacity: 1;
+}
+
+.form-text {
+  color: #6c757d;
+  font-size: 0.875em;
+  margin-top: 0.25rem;
+}
+
+// Input group
+.input-group-text {
+  background-color: #e9ecef;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem 0 0 0.25rem;
+}
+
+// Button styling
+.btn-success {
+  background-color: #28a745;
+  border-color: #28a745;
+  color: #fff;
+  
+  &:hover:not(:disabled) {
+    background-color: #218838;
+    border-color: #1e7e34;
+  }
+  
+  &:disabled {
+    opacity: 0.65;
+  }
+}
+
+.btn-outline-secondary {
+  color: #6c757d;
+  border-color: #6c757d;
+  
+  &:hover {
+    color: #fff;
+    background-color: #6c757d;
+    border-color: #6c757d;
+  }
+}
+
+// Status badge
+.badge {
+  padding: 0.35em 0.65em;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25rem;
+  
+  &.bg-warning {
+    background-color: #ffc107 !important;
+    color: #212529;
+  }
+  
+  &.bg-success {
+    background-color: #28a745 !important;
+    color: #fff;
+  }
+}
+
+// Alert styling
+.alert {
+  border-radius: 0.25rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  
+  &.alert-danger {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+  }
+  
+  &.alert-success {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+  }
+}
+
+// Spinner
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+  color: #1a237e;
+}
+
+// Responsive layout
+@media (max-width: 767.98px) {
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start !important;
+    
+    a {
+      margin-top: 0.5rem;
+      width: 100%;
+    }
+  }
+  
+  .d-flex.justify-content-between {
+    flex-direction: column;
+    gap: 1rem;
+    
+    button {
+      width: 100%;
+    }
+  }
+  
+  .container {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}

@@ -1,0 +1,121 @@
+.selected-book-details, .selected-member-details {
+  padding: 16px;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  border-left: 4px solid #1a237e;
+  
+  .book-title, .member-name {
+    margin: 0 0 8px 0;
+    font-size: 1.25rem;
+    color: #1a237e;
+  }
+  
+  .book-author, .member-email {
+    margin: 0 0 16px 0;
+    color: #666;
+  }
+  
+  .availability-section {
+    margin-top: 16px;
+  }
+}
+
+// Enhance borrowing status indicators with better visual feedback
+.borrowing-status {
+  background-color: rgba(0, 0, 0, 0.03);
+  padding: 12px;
+  border-radius: 4px;
+  
+  p {
+    margin-bottom: 8px;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  
+  .text-success {
+    color: #28a745 !important;
+    font-weight: 500;
+  }
+  
+  .text-danger {
+    color: #dc3545 !important;
+    font-weight: 500;
+  }
+  
+  .text-warning {
+    color: #ffc107 !important;
+    font-weight: 500;
+  }
+}
+
+.large-icon {
+  font-size: 48px;
+  height: 48px;
+  width: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+// Add styles for validation errors
+.mat-form-field.ng-invalid.ng-touched {
+  .mat-form-field-outline {
+    color: #f44336;
+  }
+}
+
+// Make cards equal height in their rows
+.mat-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  
+  .mat-card-content {
+    flex-grow: 1;
+  }
+}
+
+// Styles for search inputs
+.loading-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 48px;
+  color: #666;
+}
+
+.no-results-option {
+  color: #f44336;
+  font-style: italic;
+}
+
+mat-form-field {
+  margin-bottom: 16px;
+}
+
+// Improve autocomplete options appearance
+::ng-deep .mat-option {
+  line-height: 1.2;
+  height: auto;
+  min-height: 48px;
+  padding: 8px 16px;
+  white-space: normal;
+}
+
+// Add a pulsing animation for the submit button when form is valid
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(38, 143, 255, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(38, 143, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(38, 143, 255, 0);
+  }
+}
+
+.btn-primary:not(:disabled) {
+  animation: pulse 2s infinite;
+}

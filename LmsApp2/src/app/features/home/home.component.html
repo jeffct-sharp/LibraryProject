@@ -1,0 +1,285 @@
+<div class="home-container">
+  <div class="home-header text-center py-5">
+    <h1 class="display-4 mb-3">{{ title }}</h1>
+    <p class="lead mb-4">Welcome to your modern library. Search, discover, and borrow books with ease.</p>
+    <div class="search-bar mx-auto mb-4" style="max-width: 500px;">
+      <input type="text" class="form-control form-control-lg" [(ngModel)]="searchTerm" (keyup.enter)="searchBooks()" placeholder="Search books by title, author, or ISBN...">
+      <button class="btn btn-primary mt-2 w-100" (click)="searchBooks()">Search</button>
+    </div>
+
+    <!-- Search Results Display - Made same width as search bar -->
+    <div class="search-results-container mx-auto mb-4" *ngIf="showSearchResults" style="max-width: 500px;">
+      <div class="search-results-header d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Results for "{{ searchTerm }}"</h3>
+        <button class="btn btn-outline-secondary btn-sm" (click)="clearSearchResults()">
+          <i class="pi pi-times me-2"></i>Clear
+        </button>
+      </div>
+      
+      <div *ngIf="searchResults.length > 0">
+        <div class="list-group">
+          <a *ngFor="let book of searchResults" 
+             class="list-group-item list-group-item-action search-result-item"
+             (click)="viewBookDetails(book.bookID)">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1">{{ book.title }}</h5>
+              <small>
+                <span class="badge" [ngClass]="book.availableCopies > 0 ? 'bg-success' : 'bg-danger'">
+                  {{ book.availableCopies > 0 ? 'Available' : 'Unavailable' }}
+                </span>
+              </small>
+            </div>
+            <p class="mb-1">{{ book.author }}</p>
+          </a>
+        </div>
+      </div>
+      
+      <div class="no-results text-center p-4" *ngIf="searchResults.length === 0">
+        <i class="pi pi-search" style="font-size: 2rem; color: #ccc;"></i>
+        <h4 class="mt-3">No Books Found</h4>
+        <p>We couldn't find any books matching "{{ searchTerm }}"</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+    <div *ngIf="loading" class="text-center py-5">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p class="mt-3 text-muted">Loading books...</p>
+    </div>
+
+    <!-- NEW SECTION: Library Information Panel - Added above featured books collection -->
+    <div class="library-info-panel mb-4" *ngIf="!loading && !showSearchResults">
+      <div class="row">
+        <div class="col-md-4 mb-3 mb-md-0">
+          <div class="info-card">
+            <div class="icon-bg bg-primary">
+              <i class="pi pi-book"></i>
+            </div>
+            <div class="info-content">
+              <h4>{{ books.length }}</h4>
+              <p>Total Books</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3 mb-md-0">
+          <div class="info-card">
+            <div class="icon-bg bg-success">
+              <i class="pi pi-tags"></i>
+            </div>
+            <div class="info-content">
+              <h4>{{ genres.length }}</h4>
+              <p>Unique Genres</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="info-card">
+            <div class="icon-bg bg-info">
+              <i class="pi pi-users"></i>
+            </div>
+            <div class="info-content">
+              <h4>Join Today</h4>
+              <p>Become a Member</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Access Section -->
+    <div class="row mb-5 mt-4" *ngIf="!loading && !showSearchResults">
+      <div class="col-12">
+        <h2 class="text-center mb-4">Quick Access</h2>
+      </div>
+      
+      <!-- Fix Borrowing History Card -->
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm quick-access-card">
+          <div class="card-body text-center">
+            <div class="icon-container mb-3">
+              <i class="pi pi-history" style="font-size: 3rem; color: #3f51b5;"></i>
+            </div>
+            <h5 class="card-title">Borrowing History</h5>
+            <p class="card-text">View your complete book borrowing history and current loans.</p>
+            
+            <!-- When user is logged in and has a member ID -->
+            <div *ngIf="isAuthenticated && getMemberIdFromAuth() > 0">
+              <a [routerLink]="['/transactions/member-history', getMemberIdFromAuth()]" class="btn btn-primary w-100">
+                <i class="pi pi-history me-2"></i>View My History
+              </a>
+            </div>
+            
+            <!-- When user is logged in but doesn't have a member ID -->
+            <div *ngIf="isAuthenticated && getMemberIdFromAuth() <= 0">
+              <button class="btn btn-warning w-100" disabled title="Member ID not found">
+                <i class="pi pi-exclamation-triangle me-2"></i>Profile Incomplete
+              </button>
+              <small class="text-muted d-block mt-2">Your account is not linked to a member profile</small>
+            </div>
+            
+            <!-- When user is not logged in -->
+            <div *ngIf="!isAuthenticated">
+              <a routerLink="/auth/login" [queryParams]="{returnUrl: '/transactions'}" class="btn btn-outline-primary w-100">
+                <i class="pi pi-sign-in me-2"></i>Login to View History
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Other quick access cards go here -->
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm quick-access-card">
+          <div class="card-body text-center">
+            <div class="icon-container mb-3">
+              <i class="pi pi-book" style="font-size: 3rem; color: #3f51b5;"></i>
+            </div>
+            <h5 class="card-title">Browse Books</h5>
+            <p class="card-text">Explore our extensive collection of books across various genres.</p>
+            <a routerLink="/books" class="btn btn-primary w-100">
+              <i class="pi pi-search me-2"></i>Browse Catalog
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Add a third card based on user role -->
+      <div class="col-md-4 mb-4" *ngIf="isAuthenticated && userRole === 'Admin' || userRole === 'Librarian'">
+        <div class="card h-100 shadow-sm quick-access-card">
+          <div class="card-body text-center">
+            <div class="icon-container mb-3">
+              <i class="pi pi-cog" style="font-size: 3rem; color: #3f51b5;"></i>
+            </div>
+            <h5 class="card-title">Manage Library</h5>
+            <p class="card-text">Access administrative tools for library management.</p>
+            <a routerLink="/transactions" class="btn btn-primary w-100">
+              <i class="pi pi-cog me-2"></i>Manage Transactions
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4 mb-4" *ngIf="isAuthenticated && userRole !== 'Admin' && userRole !== 'Librarian'">
+        <div class="card h-100 shadow-sm quick-access-card">
+          <div class="card-body text-center">
+            <div class="icon-container mb-3">
+              <i class="pi pi-user" style="font-size: 3rem; color: #3f51b5;"></i>
+            </div>
+            <h5 class="card-title">My Profile</h5>
+            <p class="card-text">View and update your member profile and settings.</p>
+            <a routerLink="/members/profile" class="btn btn-primary w-100">
+              <i class="pi pi-user me-2"></i>View Profile
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4 mb-4" *ngIf="!isAuthenticated">
+        <div class="card h-100 shadow-sm quick-access-card">
+          <div class="card-body text-center">
+            <div class="icon-container mb-3">
+              <i class="pi pi-user-plus" style="font-size: 3rem; color: #3f51b5;"></i>
+            </div>
+            <h5 class="card-title">Join Now</h5>
+            <p class="card-text">Become a member and enjoy all library benefits.</p>
+            <a routerLink="/auth/register" class="btn btn-primary w-100">
+              <i class="pi pi-user-plus me-2"></i>Register
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="!loading">
+      <h2 class="mb-3">Featured Book Collection</h2>
+      <p-carousel [value]="featuredBooks" [numVisible]="4" [numScroll]="4" [circular]="true" [autoplayInterval]="5000">
+        <ng-template pTemplate="item" let-book>
+          <div class="featured-book-card card p-3 text-center" (click)="selectBook(book)">
+            <h5>{{ book.title }}</h5>
+          </div>
+        </ng-template>
+      </p-carousel>
+      <!-- Book details modal/section -->
+      <div *ngIf="selectedBook" class="modal show d-block" tabindex="-1" style="background:rgba(0,0,0,0.3)">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">{{ selectedBook.title }}</h5>
+              <button type="button" class="btn-close" (click)="selectedBook = null" title="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p><strong>Author:</strong> {{ selectedBook.author }}</p>
+              <p><strong>Genre:</strong> {{ selectedBook.genre }}</p>
+              <p><strong>ISBN:</strong> {{ selectedBook.isbn }}</p>
+              <p><strong>Year:</strong> {{ selectedBook.yearPublished }}</p>
+              <p><strong>Available Copies:</strong> {{ selectedBook.availableCopies }}</p>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-primary" (click)="borrowBook(selectedBook)">Borrow</button>
+              <button class="btn btn-secondary" (click)="selectedBook = null">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add this section to the Dashboard where appropriate -->
+    <div class="col-md-6 mb-4" *ngIf="isAuthenticated">
+      <div class="card shadow h-100">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+          <h5 class="mb-0 text-danger">
+            <i class="pi pi-dollar me-2"></i>My Fines
+          </h5>
+          <button class="btn btn-sm btn-outline-danger" (click)="viewMyFines()">
+            <i class="pi pi-external-link me-1"></i>View All
+          </button>
+        </div>
+        <div class="card-body">
+          <div *ngIf="loadingFines" class="text-center py-5">
+            <div class="spinner-border spinner-border-sm text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2 text-muted small">Loading fines...</p>
+          </div>
+          
+          <div *ngIf="!loadingFines && pendingFines.length === 0" class="text-center py-4">
+            <i class="pi pi-check-circle text-success" style="font-size: 2rem;"></i>
+            <p class="mt-2 mb-0">No outstanding fines</p>
+            <p class="text-muted small">You're all caught up!</p>
+          </div>
+          
+          <div *ngIf="!loadingFines && pendingFines.length > 0">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="fw-bold">Outstanding Fines: {{ pendingFines.length }}</span>
+              <span class="badge bg-danger">Total: ₹{{ getTotalFineAmount() }}</span>
+            </div>
+            
+            <div class="list-group fine-list">
+              <div *ngFor="let fine of pendingFines.slice(0, 3)" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                  <h6 class="mb-1">Fine #{{ fine.fineID }}</h6>
+                  <span class="text-danger">₹{{ fine.amount }}</span>
+                </div>
+                <p class="mb-1 small">{{ fine.bookName || 'Book #' + fine.bookID }}</p>
+                <small class="text-muted">Issued: {{ formatDate(fine.transactionDate) }}</small>
+              </div>
+            </div>
+            
+            <div *ngIf="pendingFines.length > 3" class="text-center mt-2">
+              <small class="text-muted">
+                + {{ pendingFines.length - 3 }} more fine{{ pendingFines.length - 3 > 1 ? 's' : '' }}
+              </small>
+            </div>
+            
+            <div class="alert alert-warning mt-3 small">
+              <i class="pi pi-exclamation-triangle me-1"></i>
+              Please settle your fines to maintain borrowing privileges.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

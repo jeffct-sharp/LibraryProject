@@ -1,0 +1,105 @@
+<div class="container mt-4">
+  <div class="card shadow" *ngIf="fine">
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+      <h5 class="mb-0 text-primary">
+        <i class="pi pi-dollar me-2"></i>Fine #{{ fine.fineID }} Details
+      </h5>
+      <button class="btn btn-outline-secondary" (click)="goBack()">
+        <i class="pi pi-arrow-left me-2"></i>Back to Fines
+      </button>
+    </div>
+    
+    <div class="card-body">
+      <!-- Loading Indicator -->
+      <div *ngIf="loading" class="text-center p-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2 text-muted">Loading fine details...</p>
+      </div>
+      
+      <!-- Error Message -->
+      <div *ngIf="error" class="alert alert-danger d-flex align-items-center mb-4">
+        <i class="pi pi-exclamation-triangle me-2"></i>
+        <div>{{ error }}</div>
+      </div>
+      
+      <!-- Fine Details -->
+      <div *ngIf="!loading" class="row">
+        <div class="col-md-6">
+          <h5 class="border-bottom pb-2 mb-3">Basic Information</h5>
+          <table class="table table-striped">
+            <tr>
+              <th width="35%">Fine ID</th>
+              <td>{{ fine.fineID }}</td>
+            </tr>
+            <tr>
+              <th>Member</th>
+              <td>
+                {{ member?.name || 'ID: ' + fine.memberID }}
+                <a [routerLink]="['/members', fine.memberID]" class="ms-2 text-primary">
+                  <i class="pi pi-user"></i>
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <th>Amount</th>
+              <td class="fine-amount">{{ formatCurrency(fine.amount) }}</td>
+            </tr>
+          </table>
+        </div>
+        
+        <div class="col-md-6">
+          <h5 class="border-bottom pb-2 mb-3">Status & Dates</h5>
+          <table class="table table-striped">
+            <tr>
+              <th width="35%">Status</th>
+              <td>
+                <span class="badge" [ngClass]="getStatusClass(fine.status)">
+                  {{ fine.status }}
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <th>Transaction Date</th>
+              <td>{{ formatDate(fine.transactionDate) }}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      
+      <!-- Actions -->
+      <div *ngIf="!loading" class="mt-4 d-flex justify-content-end gap-2">
+        <button *ngIf="isAdmin()" class="btn btn-primary" (click)="editFine()">
+          <i class="pi pi-pencil me-2"></i>Edit
+        </button>
+        
+        <button *ngIf="isAdmin() && fine.status === 'Paid'" class="btn btn-danger" (click)="deleteFine()">
+          <i class="pi pi-trash me-2"></i>Delete
+        </button>
+        
+        <button *ngIf="(isAdmin() || isLibrarian()) && fine.status === 'Pending'" class="btn btn-success" (click)="payFine()">
+          <i class="pi pi-credit-card me-2"></i>Pay
+        </button>
+        
+        <a [routerLink]="['/members', fine.memberID]" class="btn btn-info">
+          <i class="pi pi-user me-2"></i>View Member
+        </a>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Error when fine is null -->
+  <div *ngIf="error && !fine && !loading" class="alert alert-danger d-flex align-items-center">
+    <i class="pi pi-exclamation-triangle me-2"></i>
+    <div>{{ error }}</div>
+  </div>
+  
+  <!-- Loading indicator outside of card -->
+  <div *ngIf="loading && !fine" class="text-center p-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2 text-muted">Loading fine details...</p>
+  </div>
+</div>

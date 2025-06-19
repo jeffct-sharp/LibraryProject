@@ -1,0 +1,40 @@
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.sidenav-container {
+  flex: 1;
+  height: 100%;
+}
+
+.sidenav {
+  width: 280px;
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.1);
+}
+
+.content-container {
+  padding: 16px; /* Added padding for better content spacing */
+  min-height: calc(100vh - 64px);
+  background-color: #f5f5f5;
+}
+
+.footer {
+  background-color: #212121;
+  color: white;
+  padding: 16px 0;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .content-container {
+    min-height: calc(100vh - 56px);
+    padding: 8px; /* Reduce padding on mobile */
+  }
+}
+
+/* Adjustments for Angular Material components */
+::ng-deep .mat-drawer-backdrop.mat-drawer-shown {
+  background-color: rgba(0, 0, 0, 0.6);
+}

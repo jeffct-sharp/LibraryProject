@@ -1,0 +1,56 @@
+.card {
+  transition: box-shadow 0.3s;
+}
+
+.card:hover {
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+
+.form-control:focus {
+  border-color: #1a237e;
+  box-shadow: 0 0 0 0.25rem rgba(26, 35, 126, 0.25);
+}
+
+.border-primary {
+  border-color: #1a237e !important;
+}
+
+.bg-primary {
+  background-color: #1a237e !important;
+}
+
+.btn-primary {
+  background-color: #1a237e;
+  border-color: #1a237e;
+}
+
+.btn-primary:hover {
+  background-color: #303f9f;
+  border-color: #303f9f;
+}
+
+.btn-success {
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+.btn-success:hover:not(:disabled) {
+  background-color: #218838;
+  border-color: #1e7e34;
+}
+
+.alert-warning {
+  background-color: #fff3e0;
+  border-color: #ffe0b2;
+  color: #e65100;
+}
+
+.alert-success {
+  background-color: #e8f5e9;
+  border-color: #c8e6c9;
+  color: #2e7d32;
+}
+
+.highlight-overdue {
+  background-color: rgba(220, 53, 69, 0.05);
+}

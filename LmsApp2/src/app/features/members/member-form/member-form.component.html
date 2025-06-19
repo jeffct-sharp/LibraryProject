@@ -1,0 +1,113 @@
+<div class="container mt-4">
+  <div class="card shadow mb-4">
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+      <h5 class="mb-0 text-primary">
+        <i class="pi pi-user-edit me-2"></i>{{ isEditMode ? 'Edit' : 'Add' }} Member
+      </h5>
+      <button class="btn btn-outline-secondary" 
+              [routerLink]="[isEditMode ? (canAccessMembers ? '/members' : '/members/profile') : '/members']">
+        <i class="pi pi-arrow-left me-2"></i>Back
+      </button>
+    </div>
+    
+    <div class="card-body">
+      <!-- Error Message -->
+      <div *ngIf="error" class="alert alert-danger d-flex align-items-center mb-4">
+        <i class="pi pi-exclamation-triangle me-2"></i>
+        <div>{{ error }}</div>
+        <button type="button" class="btn-close ms-auto" (click)="error = null" aria-label="Close"></button>
+      </div>
+      
+      <!-- Loading Indicator -->
+      <div *ngIf="loading" class="text-center p-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2 text-muted">{{ isEditMode ? 'Loading member data...' : 'Creating member...' }}</p>
+      </div>
+      
+      <form [formGroup]="memberForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
+        <div class="row">
+          <!-- Basic Information -->
+          <div class="col-md-6 mb-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Name</mat-label>
+              <input matInput formControlName="name" placeholder="Enter full name">
+              <mat-icon matSuffix>person</mat-icon>
+              <mat-error *ngIf="hasError('name', 'required')">Name is required</mat-error>
+              <mat-error *ngIf="hasError('name', 'maxlength')">Name cannot exceed 100 characters</mat-error>
+            </mat-form-field>
+          </div>
+          
+          <div class="col-md-6 mb-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Email</mat-label>
+              <input matInput formControlName="email" placeholder="Enter email address" type="email">
+              <mat-icon matSuffix>email</mat-icon>
+              <mat-hint *ngIf="isEditMode">Email cannot be changed</mat-hint>
+              <mat-error *ngIf="hasError('email', 'required')">Email is required</mat-error>
+              <mat-error *ngIf="hasError('email', 'email')">Enter a valid email address</mat-error>
+            </mat-form-field>
+          </div>
+          
+          <!-- Password field (only for new members) -->
+          <div *ngIf="!isEditMode" class="col-md-6 mb-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Password</mat-label>
+              <input matInput formControlName="password" [type]="showPassword ? 'text' : 'password'" placeholder="Enter password">
+              <button mat-icon-button matSuffix (click)="togglePasswordVisibility()" type="button">
+                <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+              <mat-error *ngIf="hasError('password', 'required')">Password is required</mat-error>
+              <mat-error *ngIf="hasError('password', 'minlength')">Password must be at least 8 characters</mat-error>
+            </mat-form-field>
+          </div>
+          
+          <div class="col-md-6 mb-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Phone</mat-label>
+              <input matInput formControlName="phone" placeholder="Enter phone number">
+              <mat-icon matSuffix>phone</mat-icon>
+              <mat-error *ngIf="hasError('phone', 'required')">Phone number is required</mat-error>
+              <mat-error *ngIf="hasError('phone', 'pattern')">Enter a valid phone number</mat-error>
+            </mat-form-field>
+          </div>
+          
+          <div class="col-md-6 mb-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Address</mat-label>
+              <textarea matInput formControlName="address" placeholder="Enter address (optional)" rows="3"></textarea>
+              <mat-icon matSuffix>location_on</mat-icon>
+            </mat-form-field>
+          </div>
+          
+          <!-- Role selection (admins only) -->
+          <div *ngIf="!isEditMode || canChangeRole()" class="col-md-6 mb-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Role</mat-label>
+              <mat-select formControlName="role">
+                <mat-option *ngFor="let role of availableRoles" [value]="role">
+                  {{ role }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matSuffix>badge</mat-icon>
+              <mat-hint *ngIf="!canChangeRole()">Only administrators can change roles</mat-hint>
+            </mat-form-field>
+          </div>
+        </div>
+        
+        <!-- Form Actions -->
+        <div class="d-flex justify-content-between mt-4">
+          <button type="button" class="btn btn-outline-secondary" (click)="resetForm()">
+            <i class="pi pi-refresh me-2"></i>Reset
+          </button>
+          
+          <button type="submit" class="btn btn-primary" [disabled]="memberForm.invalid || formState.isSubmitting">
+            <span *ngIf="formState.isSubmitting" class="spinner-border spinner-border-sm me-2"></span>
+            <i *ngIf="!formState.isSubmitting" class="pi pi-save me-2"></i>{{ isEditMode ? 'Update' : 'Create' }} Member
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

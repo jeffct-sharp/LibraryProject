@@ -1,0 +1,6 @@
+<span class="availability-badge {{ badgeClass }}" [ngStyle]="customStyle">
+  <mat-icon *ngIf="availableCopies <= 0">block</mat-icon>
+  <mat-icon *ngIf="availableCopies > 0 && badgeClass === 'badge-limited'">warning</mat-icon>
+  <mat-icon *ngIf="availableCopies > 0 && badgeClass === 'badge-available'">check_circle</mat-icon>
+  {{ statusText }}
+</span>

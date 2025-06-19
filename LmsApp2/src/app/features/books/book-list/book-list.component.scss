@@ -1,0 +1,79 @@
+.book-list-container {
+  padding: 20px;
+}
+
+.search-container {
+  margin-bottom: 20px;
+}
+
+.filters-container {
+  margin-bottom: 20px;
+}
+
+.mat-table {
+  width: 100%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.action-column {
+  width: 120px;
+}
+
+.mat-column-title {
+  min-width: 200px;
+}
+
+.mat-column-author {
+  min-width: 150px;
+}
+
+.status-available {
+  color: #4caf50;
+}
+
+.status-unavailable {
+  color: #f44336;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #757575;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  margin: 40px 0;
+}
+
+.table-container {
+  overflow-x: auto;
+  margin-bottom: 20px;
+}
+
+.book-actions button {
+  margin-right: 8px;
+}
+
+/* Fix for pagination controls */
+.mat-paginator {
+  background: transparent;
+  display: flex;
+  justify-content: center;
+}
+
+/* Ensure rows are properly spaced */
+.mat-row {
+  min-height: 48px;
+}
+
+/* Fix for sort headers */
+.mat-sort-header-container {
+  align-items: center;
+}
+
+/* Make table full width to match paginator */
+.w-100 {
+  width: 100%;
+}

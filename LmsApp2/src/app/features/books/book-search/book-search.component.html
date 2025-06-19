@@ -1,0 +1,78 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Advanced Search</mat-card-title>
+  </mat-card-header>
+  
+  <mat-card-content>
+    <form [formGroup]="searchForm" (ngSubmit)="onSubmit()">
+      <div class="search-form-container">
+        <mat-form-field appearance="outline">
+          <mat-label>Title</mat-label>
+          <input matInput placeholder="Search by title" formControlName="title">
+          <mat-icon matSuffix>title</mat-icon>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline">
+          <mat-label>Author</mat-label>
+          <input matInput placeholder="Search by author" formControlName="author">
+          <mat-icon matSuffix>person</mat-icon>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline">
+          <mat-label>Genre</mat-label>
+          <mat-select formControlName="genre">
+            <mat-option value="">Any Genre</mat-option>
+            <mat-option *ngFor="let genre of genres" [value]="genre">
+              {{ genre }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline">
+          <mat-label>ISBN</mat-label>
+          <input matInput placeholder="Search by ISBN" formControlName="isbn">
+          <mat-icon matSuffix>dialpad</mat-icon>
+        </mat-form-field>
+        
+        <div class="year-range">
+          <mat-form-field appearance="outline">
+            <mat-label>Year From</mat-label>
+            <input matInput type="number" placeholder="From year" formControlName="yearPublishedFrom">
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline">
+            <mat-label>Year To</mat-label>
+            <input matInput type="number" placeholder="To year" formControlName="yearPublishedTo">
+          </mat-form-field>
+        </div>
+        
+        <mat-checkbox formControlName="availableCopiesGreaterThanZero">
+          Show only available books
+        </mat-checkbox>
+      </div>
+      
+      <!-- Active filters display -->
+      <div *ngIf="getFilterCount() > 0" class="active-filters">
+        <h4>Active Filters:</h4>
+        <mat-chip-list>
+          <mat-chip 
+            *ngFor="let key of getFilterKeys()" 
+            [removable]="true" 
+            (removed)="removeFilter(key)">
+            {{ key }}: {{ activeFilters[key] }}
+            <mat-icon matChipRemove>cancel</mat-icon>
+          </mat-chip>
+        </mat-chip-list>
+      </div>
+      
+      <div class="search-actions">
+        <button mat-raised-button color="primary" type="submit">
+          <mat-icon>search</mat-icon> Search
+        </button>
+        <button mat-button type="button" (click)="onReset()">
+          <mat-icon>clear</mat-icon> Reset
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

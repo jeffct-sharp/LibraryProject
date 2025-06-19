@@ -1,0 +1,192 @@
+<div class="container mt-4">
+  <div class="card shadow mb-4">
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+      <h5 class="mb-0 text-primary" *ngIf="transaction">
+        <i class="pi pi-info-circle me-2"></i>Transaction #{{ transaction.transactionID }}
+      </h5>
+      <a routerLink="/transactions" class="btn btn-outline-secondary">
+        <i class="pi pi-arrow-left me-2"></i>Back to Transactions
+      </a>
+    </div>
+    
+    <div class="card-body">
+      <!-- Loading Indicator -->
+      <div *ngIf="loading" class="text-center p-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2 text-muted">Loading transaction details...</p>
+      </div>
+      
+      <!-- Error Message -->
+      <div *ngIf="error" class="alert alert-danger d-flex align-items-center">
+        <i class="pi pi-exclamation-triangle me-2"></i>
+        <div>{{ error }}</div>
+      </div>
+      
+      <!-- Transaction Details -->
+      <div *ngIf="transaction && !loading" class="transaction-details">
+        <!-- Transaction Status Banner -->
+        <div class="status-banner mb-4" [ngClass]="{
+          'status-returned': transaction.status === 'Returned',
+          'status-borrowed': transaction.status === 'Borrowed' && !transaction.isOverdue,
+          'status-overdue': transaction.isOverdue
+        }">
+          <div class="status-icon">
+            <i class="pi" [ngClass]="{
+              'pi-check-circle': transaction.status === 'Returned',
+              'pi-book': transaction.status === 'Borrowed' && !transaction.isOverdue,
+              'pi-exclamation-triangle': transaction.isOverdue
+            }"></i>
+          </div>
+          <div class="status-text">
+            <h5>{{ transaction.status }}</h5>
+            <p *ngIf="transaction.status === 'Returned'">
+              This book was returned on {{ transaction.formattedReturnDate }}.
+            </p>
+            <p *ngIf="transaction.status !== 'Returned' && !transaction.isOverdue">
+              This book is due on {{ transaction.formattedDueDate }}.
+            </p>
+            <p *ngIf="transaction.isOverdue" class="text-danger">
+              This book was due on {{ transaction.formattedDueDate }} and is overdue.
+            </p>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="col-md-6">
+            <h6 class="text-muted mb-3">Book Information</h6>
+            <div class="detail-item">
+              <span class="label">Book:</span>
+              <span class="value">{{ transaction.bookName }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Book ID:</span>
+              <span class="value">{{ transaction.bookID }}</span>
+            </div>
+            <a [routerLink]="['/books', transaction.bookID]" class="btn btn-sm btn-outline-primary mt-2">
+              <i class="pi pi-info-circle me-1"></i>View Book Details
+            </a>
+          </div>
+          
+          <div class="col-md-6">
+            <h6 class="text-muted mb-3">Member Information</h6>
+            <div class="detail-item">
+              <span class="label">Member:</span>
+              <span class="value">{{ transaction.memberName || 'ID: ' + transaction.memberID }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Member ID:</span>
+              <span class="value">{{ transaction.memberID }}</span>
+            </div>
+            <a [routerLink]="['/members', transaction.memberID]" class="btn btn-sm btn-outline-primary mt-2">
+              <i class="pi pi-user me-1"></i>View Member Details
+            </a>
+          </div>
+        </div>
+        
+        <hr class="my-4">
+        
+        <div class="row">
+          <div class="col-md-6">
+            <h6 class="text-muted mb-3">Transaction Dates</h6>
+            <div class="detail-item">
+              <span class="label">Borrow Date:</span>
+              <span class="value">{{ transaction.formattedBorrowDate }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Due Date:</span>
+              <span class="value" [ngClass]="{'text-danger': transaction.isOverdue}">
+                {{ transaction.formattedDueDate }}
+              </span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Return Date:</span>
+              <span class="value">
+                {{ transaction.formattedReturnDate }}
+              </span>
+            </div>
+          </div>
+          
+          <div class="col-md-6">
+            <h6 class="text-muted mb-3">Status</h6>
+            <div class="detail-item">
+              <span class="label">Status:</span>
+              <span class="value">
+                <span class="status-badge" [ngClass]="{
+                  'badge-returned': transaction.status === 'Returned',
+                  'badge-borrowed': transaction.status === 'Borrowed' && !transaction.isOverdue,
+                  'badge-overdue': transaction.isOverdue
+                }">
+                  {{ transaction.status }}
+                </span>
+              </span>
+            </div>
+            
+            <div *ngIf="transaction.isOverdue" class="detail-item mt-3">
+              <div class="alert alert-danger">
+                <strong>Overdue Notice:</strong> This book is overdue by 
+                {{ transaction.daysOverdue }} days.
+                <div *ngIf="transaction.fineAmount" class="mt-2">
+                  <strong>Potential fine:</strong> ₹{{ transaction.fineAmount.toFixed(2) }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Transaction Timeline -->
+        <div class="timeline-section mt-5">
+          <h6 class="text-muted mb-3">Transaction Timeline</h6>
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="timeline-marker"></div>
+              <div class="timeline-content">
+                <h6 class="mb-1">Book Borrowed</h6>
+                <p class="mb-0">{{ transaction.formattedBorrowDate }}</p>
+              </div>
+            </div>
+            <div class="timeline-item" [ngClass]="{'timeline-item-active': !transaction.isReturned && !transaction.isOverdue}">
+              <div class="timeline-marker" [ngClass]="{'timeline-marker-warning': transaction.isOverdue}"></div>
+              <div class="timeline-content">
+                <h6 class="mb-1">Due Date</h6>
+                <p class="mb-0" [ngClass]="{'text-danger': transaction.isOverdue}">
+                  {{ transaction.formattedDueDate }}
+                </p>
+              </div>
+            </div>
+            <div class="timeline-item" *ngIf="transaction.isReturned" [ngClass]="{'timeline-item-active': transaction.isReturned}">
+              <div class="timeline-marker timeline-marker-success"></div>
+              <div class="timeline-content">
+                <h6 class="mb-1">Book Returned</h6>
+                <p class="mb-0">{{ transaction.formattedReturnDate }}</p>
+              </div>
+            </div>
+            <div class="timeline-item" *ngIf="!transaction.isReturned">
+              <div class="timeline-marker timeline-marker-pending"></div>
+              <div class="timeline-content">
+                <h6 class="mb-1">Book Return</h6>
+                <p class="mb-0 text-muted">Pending</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="d-flex justify-content-end gap-2 mt-4">
+          <button *ngIf="transaction.status !== 'Returned' && (isAdmin() || isLibrarian())" 
+                  class="btn btn-success" 
+                  (click)="returnBook()">
+            <i class="pi pi-arrow-circle-left me-2"></i>Return Book
+          </button>
+          
+          <button *ngIf="canDelete()" 
+                  class="btn btn-danger"
+                  (click)="delete()">
+            <i class="pi pi-trash me-2"></i>Delete Transaction
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

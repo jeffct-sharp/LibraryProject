@@ -1,0 +1,138 @@
+.transaction-details-card {
+  border-left: 4px solid #17a2b8;
+  
+  &.overdue-card {
+    border-left-color: #dc3545;
+  }
+  
+  .detail-item {
+    margin-bottom: 12px;
+    display: flex;
+    
+    .label {
+      font-weight: 500;
+      width: 120px;
+      color: #666;
+    }
+    
+    .value {
+      flex: 1;
+    }
+    
+    .text-danger {
+      color: #dc3545;
+    }
+  }
+}
+
+.status-badge {
+  padding: 0.35em 0.65em;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25rem;
+  
+  &.badge-active {
+    background-color: #17a2b8;
+    color: #fff;
+  }
+  
+  &.badge-overdue {
+    background-color: #dc3545;
+    color: #fff;
+  }
+}
+
+.fine-alert {
+  display: flex;
+  align-items: flex-start;
+  padding: 16px;
+  background-color: rgba(220, 53, 69, 0.1);
+  border-radius: 4px;
+  
+  mat-icon {
+    color: #dc3545;
+    margin-right: 16px;
+    font-size: 24px;
+    height: 24px;
+    width: 24px;
+  }
+  
+  h5 {
+    color: #dc3545;
+    font-size: 16px;
+    margin-top: 0;
+  }
+  
+  p {
+    margin-bottom: 4px;
+    font-size: 14px;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+// Add styles for validation errors
+.mat-form-field.ng-invalid.ng-touched {
+  .mat-form-field-outline {
+    color: #f44336;
+  }
+}
+
+// Highlight overdue rows in the table
+.highlight-overdue {
+  background-color: rgba(220, 53, 69, 0.05);
+}
+
+// Table responsive styles
+.table-responsive {
+  overflow-x: auto;
+  margin-bottom: 20px;
+}
+
+// Fix mat-table width
+.mat-table {
+  width: 100%;
+}
+
+// Fix for pagination controls
+.mat-paginator {
+  background: transparent;
+}
+
+// Button styles
+button.btn-success {
+  background-color: #28a745;
+  border-color: #28a745;
+  
+  &:hover:not(:disabled) {
+    background-color: #218838;
+    border-color: #1e7e34;
+  }
+  
+  &:disabled {
+    background-color: #86e29b;
+    border-color: #86e29b;
+  }
+}
+
+// Add a visual indicator for returned status
+.return-success-animation {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 30px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}

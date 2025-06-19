@@ -1,0 +1,116 @@
+<div class="sidenav-container">
+  <!-- Library Logo Section -->
+  <div class="logo-section">
+    <img src="assets/images/logo.png" alt="Library Logo" class="library-logo">
+    <h2 class="library-title">LibraryMS</h2>
+  </div>
+  
+  <!-- User Profile Section -->
+  <div class="user-profile" *ngIf="isLoggedIn">
+    <div class="avatar">
+      <mat-icon>account_circle</mat-icon>
+    </div>
+    <div class="user-info">
+      <div class="username">{{ username }}</div>
+      <div class="role">{{ userRole }}</div>
+    </div>
+  </div>
+  
+  <!-- Navigation Menu -->
+  <mat-nav-list>
+    <!-- Home -->
+    <a mat-list-item routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}" class="nav-item">
+      <mat-icon matListItemIcon>home</mat-icon>
+      <span matListItemTitle>Home</span>
+    </a>
+    
+    <!-- Books - Direct link without dropdown -->
+    <a mat-list-item routerLink="/books" routerLinkActive="active-link" class="nav-item">
+      <mat-icon matListItemIcon>book</mat-icon>
+      <span matListItemTitle>Books</span>
+    </a>
+    
+    <!-- Member Profile (for logged-in users) -->
+    <a mat-list-item *ngIf="isLoggedIn" routerLink="/members/profile" routerLinkActive="active-link" class="nav-item">
+      <mat-icon matListItemIcon>account_circle</mat-icon>
+      <span matListItemTitle>My Profile</span>
+    </a>
+    
+    <!-- Members - Direct link for admin/librarian only -->
+    <a mat-list-item *ngIf="hasRole(['Admin', 'Librarian'])" routerLink="/members" routerLinkActive="active-link" class="nav-item">
+      <mat-icon matListItemIcon>people</mat-icon>
+      <span matListItemTitle>Members</span>
+    </a>
+    
+    <!-- Transactions (Admin/Librarian only) - With dropdown -->
+    <div *ngIf="hasRole(['Admin', 'Librarian'])" class="nav-item-group">
+      <a mat-list-item (click)="toggleDropdown('transactions')" class="nav-item-parent">
+        <mat-icon matListItemIcon>swap_horiz</mat-icon>
+        <span matListItemTitle>Transactions</span>
+        <mat-icon class="expand-icon">{{ isDropdownOpen('transactions') ? 'expand_less' : 'expand_more' }}</mat-icon>
+      </a>
+      
+      <div class="nav-children" [class.expanded]="isDropdownOpen('transactions')">
+        <a mat-list-item routerLink="/transactions" routerLinkActive="active-link" class="nav-item-child">
+          <mat-icon matListItemIcon>list</mat-icon>
+          <span matListItemTitle>All Transactions</span>
+        </a>
+        <a mat-list-item routerLink="/transactions/borrow" routerLinkActive="active-link" class="nav-item-child">
+          <mat-icon matListItemIcon>add_circle</mat-icon>
+          <span matListItemTitle>Borrow Book</span>
+        </a>
+        <a mat-list-item routerLink="/transactions/return" routerLinkActive="active-link" class="nav-item-child">
+          <mat-icon matListItemIcon>check_circle</mat-icon>
+          <span matListItemTitle>Return Book</span>
+        </a>
+        <a mat-list-item routerLink="/transactions/overdue" routerLinkActive="active-link" class="nav-item-child">
+          <mat-icon matListItemIcon>warning</mat-icon>
+          <span matListItemTitle>Overdue Books</span>
+        </a>
+        <!-- Update Member History link to include safeguards -->
+        <a mat-list-item 
+           *ngIf="isLoggedIn && userHasMemberId()"
+           [routerLink]="['/transactions/member-history', getMemberId()]"
+           routerLinkActive="active-link"
+           class="nav-item-child">
+          <mat-icon matListItemIcon>history</mat-icon>
+          <span matListItemTitle>Member History</span>
+        </a>
+        <a mat-list-item 
+           *ngIf="isLoggedIn && !userHasMemberId()"
+           class="nav-item-child disabled-link"
+           matTooltip="Member ID not available">
+          <mat-icon matListItemIcon>history</mat-icon>
+          <span matListItemTitle>Member History</span>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Fines -->
+    <a mat-list-item *ngIf="isLoggedIn" 
+       [routerLink]="hasRole(['Admin', 'Librarian']) ? '/fines' : '/fines/member/profile'" 
+       routerLinkActive="active-link" 
+       class="nav-item">
+      <mat-icon matListItemIcon>attach_money</mat-icon>
+      <span matListItemTitle>Fines</span>
+    </a>
+    
+    <!-- Notifications -->
+    <a mat-list-item *ngIf="isLoggedIn"
+       [routerLink]="hasRole(['Admin', 'Librarian']) ? '/notifications' : '/notifications/my-notifications'" 
+       routerLinkActive="active-link" 
+       class="nav-item">
+      <mat-icon matListItemIcon>notifications</mat-icon>
+      <span matListItemTitle>Notifications</span>
+    </a>
+  </mat-nav-list>
+  
+  <!-- Bottom Section with Logout (only show if logged in) -->
+  <div class="sidenav-bottom" *ngIf="isLoggedIn">
+    <mat-divider></mat-divider>
+    <a mat-list-item (click)="logout()" class="logout-button">
+      <mat-icon matListItemIcon>exit_to_app</mat-icon>
+      <span matListItemTitle>Logout</span>
+    </a>
+  </div>
+</div>

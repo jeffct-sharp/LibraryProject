@@ -1,0 +1,270 @@
+.transaction-details {
+  .detail-item {
+    margin-bottom: 1rem;
+    
+    .label {
+      font-weight: 500;
+      width: 120px;
+      display: inline-block;
+      color: #666;
+    }
+    
+    .value {
+      font-weight: 400;
+    }
+  }
+}
+
+// Status badges
+.status-badge {
+  padding: 0.35em 0.65em;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25rem;
+  
+  &.badge-returned {
+    background-color: #28a745;
+    color: #fff;
+  }
+  
+  &.badge-borrowed {
+    background-color: #17a2b8;
+    color: #fff;
+  }
+  
+  &.badge-overdue {
+    background-color: #dc3545;
+    color: #fff;
+  }
+}
+
+// Status banner at the top
+.status-banner {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 0.25rem;
+  
+  .status-icon {
+    font-size: 2rem;
+    margin-right: 1rem;
+  }
+  
+  .status-text {
+    h5 {
+      margin-bottom: 0.25rem;
+      font-weight: 600;
+    }
+    
+    p {
+      margin-bottom: 0;
+    }
+  }
+  
+  &.status-returned {
+    background-color: rgba(40, 167, 69, 0.1);
+    color: #28a745;
+    border-left: 4px solid #28a745;
+    
+    .status-icon {
+      color: #28a745;
+    }
+  }
+  
+  &.status-borrowed {
+    background-color: rgba(23, 162, 184, 0.1);
+    color: #17a2b8;
+    border-left: 4px solid #17a2b8;
+    
+    .status-icon {
+      color: #17a2b8;
+    }
+  }
+  
+  &.status-overdue {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+    border-left: 4px solid #dc3545;
+    
+    .status-icon {
+      color: #dc3545;
+    }
+  }
+}
+
+// Timeline styling
+.timeline {
+  position: relative;
+  padding-left: 2rem;
+  margin: 0 0 0 0.5rem;
+  
+  &:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 2px;
+    background: #e9ecef;
+  }
+  
+  .timeline-item {
+    position: relative;
+    padding-bottom: 1.5rem;
+    
+    &:last-child {
+      padding-bottom: 0;
+    }
+    
+    .timeline-marker {
+      position: absolute;
+      left: -2.1rem;
+      top: 0;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #adb5bd;
+      border: 3px solid #fff;
+      
+      &.timeline-marker-success {
+        background: #28a745;
+      }
+      
+      &.timeline-marker-warning {
+        background: #dc3545;
+      }
+      
+      &.timeline-marker-pending {
+        background: #6c757d;
+        border: 3px solid #fff;
+      }
+    }
+    
+    .timeline-content {
+      h6 {
+        font-weight: 500;
+      }
+    }
+    
+    &.timeline-item-active {
+      .timeline-content {
+        h6 {
+          font-weight: 700;
+        }
+      }
+    }
+  }
+}
+
+// Alert styling
+.alert {
+  border-radius: 0.25rem;
+  padding: 1rem;
+  
+  &.alert-danger {
+    background-color: rgba(220, 53, 69, 0.1);
+    border: 1px solid rgba(220, 53, 69, 0.2);
+    color: #dc3545;
+  }
+}
+
+// Button styling
+.btn {
+  border-radius: 0.25rem;
+  padding: 0.375rem 0.75rem;
+  font-weight: 400;
+  text-align: center;
+  transition: all 0.15s ease-in-out;
+  
+  &.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: #fff;
+    
+    &:hover {
+      background-color: #218838;
+      border-color: #1e7e34;
+    }
+  }
+  
+  &.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: #fff;
+    
+    &:hover {
+      background-color: #c82333;
+      border-color: #bd2130;
+    }
+  }
+  
+  &.btn-outline-secondary {
+    color: #6c757d;
+    border-color: #6c757d;
+    
+    &:hover {
+      color: #fff;
+      background-color: #6c757d;
+      border-color: #6c757d;
+    }
+  }
+  
+  &.btn-outline-primary {
+    color: #007bff;
+    border-color: #007bff;
+    
+    &:hover {
+      color: #fff;
+      background-color: #007bff;
+      border-color: #007bff;
+    }
+  }
+}
+
+// Text colors
+.text-danger {
+  color: #dc3545 !important;
+}
+
+// Responsive improvements
+@media (max-width: 767.98px) {
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start !important;
+    
+    a {
+      margin-top: 0.5rem;
+      width: 100%;
+    }
+  }
+  
+  .d-flex.justify-content-end {
+    flex-direction: column;
+    gap: 0.5rem !important;
+    
+    button {
+      width: 100%;
+    }
+  }
+  
+  .detail-item {
+    .label, .value {
+      display: block;
+      width: 100%;
+    }
+  }
+  
+  .status-banner {
+    flex-direction: column;
+    text-align: center;
+    
+    .status-icon {
+      margin-right: 0;
+      margin-bottom: 0.5rem;
+    }
+  }
+}

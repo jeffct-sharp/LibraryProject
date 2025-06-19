@@ -1,0 +1,35 @@
+.book-details h5 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.book-details p {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.book-cover {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.badge.bg-success {
+  background-color: #388e3c !important;
+  color: #fff !important;
+}
+.badge.bg-danger {
+  background-color: #d32f2f !important;
+  color: #fff !important;
+}
+.badge.bg-info {
+  background-color: #ffc107 !important;
+  color: #212529 !important;
+}
+
+@media (max-width: 768px) {
+  .book-cover {
+    height: 250px;
+  }
+}

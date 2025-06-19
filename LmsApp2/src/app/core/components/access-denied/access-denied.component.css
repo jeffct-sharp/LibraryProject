@@ -1,0 +1,24 @@
+.access-denied-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  padding: 20px;
+}
+
+.error-icon {
+  font-size: 72px;
+  height: 72px;
+  width: 72px;
+  color: #f44336;
+}
+
+h1 {
+  color: #333;
+  font-weight: 500;
+}
+
+.lead {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}

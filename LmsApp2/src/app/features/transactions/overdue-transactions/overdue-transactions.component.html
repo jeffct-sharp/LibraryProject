@@ -1,0 +1,285 @@
+<div class="container mt-4">
+  <!-- Header Card with Stats -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card shadow bg-danger text-white">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h5 class="mb-0">
+                <i class="pi pi-exclamation-triangle me-2"></i>Overdue Transactions
+              </h5>
+              <p class="mb-0 mt-2">Books that are past their due date and need attention</p>
+            </div>
+            <a routerLink="/transactions" class="btn btn-outline-light">
+              <i class="pi pi-arrow-left me-2"></i>Back to All Transactions
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Stats Summary Cards -->
+  <div class="row mb-4">
+    <div class="col-md-3 mb-3 mb-md-0">
+      <div class="card shadow stats-card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <p class="text-muted mb-1">Total Overdue</p>
+              <h3 class="mb-0 text-danger">{{ overdueStats.totalOverdue }}</h3>
+            </div>
+            <div class="icon-circle bg-danger text-white">
+              <i class="pi pi-exclamation-circle"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-3 mb-3 mb-md-0">
+      <div class="card shadow stats-card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <p class="text-muted mb-1">Total Potential Fines</p>
+              <h3 class="mb-0 text-warning">{{ formatCurrency(overdueStats.totalFines) }}</h3>
+            </div>
+            <div class="icon-circle bg-warning text-white">
+              <i class="pi pi-money-bill"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-3 mb-3 mb-md-0">
+      <div class="card shadow stats-card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <p class="text-muted mb-1">Average Days Overdue</p>
+              <h3 class="mb-0 text-info">{{ overdueStats.averageDaysOverdue.toFixed(1) }}</h3>
+            </div>
+            <div class="icon-circle bg-info text-white">
+              <i class="pi pi-calendar"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-3">
+      <div class="card shadow stats-card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <p class="text-muted mb-1">Most Overdue</p>
+              <h3 class="mb-0 text-danger">{{ overdueStats.mostOverdueDays }} days</h3>
+            </div>
+            <div class="icon-circle bg-danger text-white">
+              <i class="pi pi-clock"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Main Content Card -->
+  <div class="card shadow mb-4">
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+      <h5 class="mb-0 text-danger">
+        <i class="pi pi-exclamation-triangle me-2"></i>Overdue Transactions
+      </h5>
+      <div>
+        <button mat-raised-button color="primary" class="me-2" (click)="exportOverdueList()" [disabled]="dataSource.data.length === 0">
+          <i class="pi pi-file-excel me-2"></i>Export
+        </button>
+        <button mat-raised-button color="accent" (click)="loadOverdueTransactions()">
+          <i class="pi pi-refresh me-2"></i>Refresh
+        </button>
+      </div>
+    </div>
+    
+    <div class="card-body">
+      <!-- Filter Form -->
+      <form [formGroup]="filterForm" class="mb-4">
+        <div class="row g-3">
+          <!-- Left Column -->
+          <div class="col-md-6">
+            <div class="card filter-card">
+              <div class="card-body">
+                <h6 class="card-title">Transaction Filters</h6>
+                
+                <div class="row">
+                  <div class="col-md-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>Book Title</mat-label>
+                      <input matInput formControlName="bookTitleFilter" placeholder="Filter by book title">
+                      <mat-icon matSuffix>book</mat-icon>
+                    </mat-form-field>
+                  </div>
+                  
+                  <div class="col-md-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>Member Name</mat-label>
+                      <input matInput formControlName="memberNameFilter" placeholder="Filter by member name">
+                      <mat-icon matSuffix>person</mat-icon>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Right Column -->
+          <div class="col-md-6">
+            <div class="card filter-card">
+              <div class="card-body">
+                <h6 class="card-title">Overdue Filters</h6>
+                
+                <div class="row">
+                  <div class="col-md-5">
+                    <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>Min Days Overdue</mat-label>
+                      <input matInput type="number" formControlName="minDaysOverdue" placeholder="Min days">
+                    </mat-form-field>
+                  </div>
+                  
+                  <div class="col-md-5">
+                    <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>Max Days Overdue</mat-label>
+                      <input matInput type="number" formControlName="maxDaysOverdue" placeholder="Max days">
+                    </mat-form-field>
+                  </div>
+                  
+                  <div class="col-md-2">
+                    <mat-checkbox formControlName="includeReturned" class="h-100 d-flex align-items-center">
+                      Include Returned
+                    </mat-checkbox>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Filter Actions -->
+          <div class="col-12 text-end">
+            <button mat-raised-button color="basic" type="button" (click)="resetFilters()">
+              <mat-icon>refresh</mat-icon>
+              Reset Filters
+            </button>
+          </div>
+        </div>
+      </form>
+      
+      <!-- Error Message -->
+      <div *ngIf="error" class="alert alert-danger d-flex align-items-center">
+        <i class="pi pi-exclamation-triangle me-2"></i>
+        <div>{{ error }}</div>
+      </div>
+      
+      <!-- Loading Indicator -->
+      <div *ngIf="loading" class="text-center p-5">
+        <div class="spinner-border text-danger" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2 text-muted">Loading overdue transactions...</p>
+      </div>
+      
+      <!-- No Results Message -->
+      <div *ngIf="!loading && dataSource.data.length === 0" class="text-center py-5">
+        <i class="pi pi-check-circle" style="font-size: 2rem; color: #28a745;"></i>
+        <h5 class="mt-3 text-success">No overdue transactions</h5>
+        <p class="text-muted">All borrowed books are within their due dates</p>
+      </div>
+
+      <!-- Overdue Transactions Table -->
+      <div *ngIf="!loading && dataSource.data.length > 0" class="table-responsive">
+        <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 w-100">
+          <!-- Transaction ID Column -->
+          <ng-container matColumnDef="transactionID">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+            <td mat-cell *matCellDef="let transaction">{{ transaction.transactionID }}</td>
+          </ng-container>
+          
+          <!-- Book Column -->
+          <ng-container matColumnDef="bookName">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Book</th>
+            <td mat-cell *matCellDef="let transaction">{{ transaction.bookName }}</td>
+          </ng-container>
+          
+          <!-- Member Column -->
+          <ng-container matColumnDef="memberID">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Member</th>
+            <td mat-cell *matCellDef="let transaction">
+              {{ transaction.memberName || 'ID: ' + transaction.memberID }}
+            </td>
+          </ng-container>
+          
+          <!-- Borrow Date Column -->
+          <ng-container matColumnDef="borrowDate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Borrow Date</th>
+            <td mat-cell *matCellDef="let transaction">{{ transaction.formattedBorrowDate }}</td>
+          </ng-container>
+          
+          <!-- Due Date Column -->
+          <ng-container matColumnDef="dueDate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Due Date</th>
+            <td mat-cell *matCellDef="let transaction">{{ transaction.formattedDueDate }}</td>
+          </ng-container>
+          
+          <!-- Overdue Days Column -->
+          <ng-container matColumnDef="overdueDays">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Days Overdue</th>
+            <td mat-cell *matCellDef="let transaction" [ngClass]="getOverdueClass(transaction.daysOverdue || 0)">
+              {{ transaction.daysOverdue || 0 }}
+            </td>
+          </ng-container>
+          
+          <!-- Potential Fine Column -->
+          <ng-container matColumnDef="potentialFine">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Potential Fine</th>
+            <td mat-cell *matCellDef="let transaction">
+              {{ formatCurrency(transaction.fineAmount || 0) }}
+            </td>
+          </ng-container>
+          
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let transaction">
+              <div class="d-flex gap-1">
+                <button mat-icon-button color="primary" (click)="viewDetails(transaction.transactionID)" 
+                        matTooltip="View Details">
+                  <mat-icon>visibility</mat-icon>
+                </button>
+                
+                <button mat-icon-button color="accent" (click)="returnBook(transaction.transactionID)" 
+                        *ngIf="transaction.status !== 'Returned' && (isAdmin() || isLibrarian())"
+                        matTooltip="Return Book">
+                  <mat-icon>assignment_return</mat-icon>
+                </button>
+                
+                <button mat-icon-button color="warn" (click)="notifyMember(transaction.transactionID)"
+                        *ngIf="transaction.status !== 'Returned' && (isAdmin() || isLibrarian())"
+                        matTooltip="Notify Member">
+                  <mat-icon>notifications</mat-icon>
+                </button>
+              </div>
+            </td>
+          </ng-container>
+          
+          <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;" 
+              [ngClass]="{'returned-row': row.status === 'Returned'}">
+          </tr>
+        </table>
+        
+        <mat-paginator [pageSizeOptions]="[5, 10, 25, 50]" showFirstLastButtons></mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>

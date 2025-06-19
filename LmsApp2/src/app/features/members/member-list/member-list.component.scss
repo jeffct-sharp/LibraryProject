@@ -1,0 +1,76 @@
+// Status badge styles
+.status-badge {
+  padding: 0.35em 0.65em;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25rem;
+  
+  &.status-active {
+    background-color: #28a745;
+    color: #fff;
+  }
+  
+  &.status-suspended {
+    background-color: #dc3545;
+    color: #fff;
+  }
+}
+
+// Highlight suspended members
+.suspended-row {
+  background-color: rgba(220, 53, 69, 0.05);
+}
+
+// Column widths
+.mat-column-actions {
+  width: 120px; // Reduced width since we removed the status change button
+  text-align: right;
+}
+
+.mat-column-memberID {
+  width: 70px;
+}
+
+.mat-column-membershipStatus {
+  width: 100px;
+}
+
+// Table styling
+.table-responsive {
+  overflow-x: auto;
+  
+  .mat-table {
+    min-width: 800px;
+  }
+}
+
+// Filter form styling
+.mat-form-field {
+  margin-bottom: 0;
+}
+
+@media (max-width: 767.98px) {
+  .d-flex.gap-1 {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .mat-column-actions {
+    width: 100px; // Even smaller on mobile since we have fewer buttons
+  }
+}
+
+// Loading spinner
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+}
+
+// No results icon
+.pi-users {
+  color: #6c757d;
+}

@@ -1,0 +1,89 @@
+<div class="member-notifications-container">
+  <div class="header">
+    <h2>
+      <i class="pi pi-bell me-2"></i>
+      Your Notifications
+    </h2>
+    <div class="action-buttons">
+      <button mat-raised-button color="primary" (click)="refreshNotifications()">
+        <mat-icon>refresh</mat-icon> Refresh
+      </button>
+      <button mat-stroked-button (click)="goToDashboard()">
+        <mat-icon>dashboard</mat-icon> Dashboard
+      </button>
+    </div>
+  </div>
+  
+  <!-- Filter Toggle -->
+  <div class="filter-toggle">
+    <mat-slide-toggle
+      color="primary"
+      [checked]="showOlderNotifications"
+      (change)="toggleOlderNotifications()">
+      Show older notifications
+    </mat-slide-toggle>
+    <span class="filter-info">
+      {{ showOlderNotifications ? 'Showing all notifications' : 'Showing notifications from the last 30 days' }}
+    </span>
+  </div>
+  
+  <!-- Loading Indicator -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Loading your notifications...</p>
+  </div>
+  
+  <!-- Error Message -->
+  <div *ngIf="error" class="error-container">
+    <mat-card>
+      <mat-card-content>
+        <div class="error-message">
+          <mat-icon>error</mat-icon>
+          <span>{{ error }}</span>
+        </div>
+        <button mat-button color="primary" (click)="refreshNotifications()">Try Again</button>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  
+  <!-- Empty State -->
+  <div *ngIf="!loading && filteredNotifications.length === 0" class="empty-state">
+    <mat-icon class="empty-icon">notifications_off</mat-icon>
+    <h3>No Notifications</h3>
+    <p>You don't have any{{ !showOlderNotifications ? ' recent' : '' }} notifications.</p>
+    <button *ngIf="!showOlderNotifications" mat-raised-button color="primary" (click)="toggleOlderNotifications()">
+      Show Older Notifications
+    </button>
+  </div>
+  
+  <!-- Notifications List -->
+  <div *ngIf="!loading && filteredNotifications.length > 0" class="notifications-list">
+    <mat-card *ngFor="let notification of getCurrentPageItems(); let last = last" 
+              class="notification-card"
+              [class.recent]="isRecent(notification.dateSent)">
+              
+      <div class="notification-timestamp">
+        <span [matTooltip]="formatDate(notification.dateSent)">{{ getTimeAgo(notification.dateSent) }}</span>
+        <div *ngIf="isRecent(notification.dateSent)" class="recent-indicator">
+          <span class="pulse"></span>
+          New
+        </div>
+      </div>
+      
+      <div class="notification-content">
+        <p class="notification-message">{{ notification.message }}</p>
+      </div>
+    </mat-card>
+    
+    <!-- Pagination -->
+    <div *ngIf="totalPages > 1" class="pagination-controls">
+      <button mat-button [disabled]="currentPage === 1" (click)="prevPage()">
+        <mat-icon>chevron_left</mat-icon> Previous
+      </button>
+      <span class="page-info">Page {{ currentPage }} of {{ totalPages }}</span>
+      <button mat-button [disabled]="currentPage === totalPages" (click)="nextPage()">
+        Next <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

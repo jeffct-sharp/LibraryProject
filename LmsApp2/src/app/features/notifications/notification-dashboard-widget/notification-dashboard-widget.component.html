@@ -1,0 +1,62 @@
+<mat-card class="notification-widget">
+  <mat-card-header>
+    <mat-card-title>
+      <div class="widget-title">
+        <mat-icon>notifications</mat-icon>
+        <span>Recent Notifications</span>
+      </div>
+    </mat-card-title>
+    <button mat-icon-button class="refresh-button" (click)="refreshNotifications()" 
+            matTooltip="Refresh notifications" [disabled]="loading">
+      <mat-icon [class.rotating]="loading">refresh</mat-icon>
+    </button>
+  </mat-card-header>
+  
+  <mat-card-content>
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-state">
+      <mat-spinner diameter="30"></mat-spinner>
+    </div>
+    
+    <!-- Error State -->
+    <div *ngIf="error && !loading" class="error-state">
+      <mat-icon color="warn">error_outline</mat-icon>
+      <p>{{ error }}</p>
+      <button mat-button color="primary" (click)="refreshNotifications()">Try Again</button>
+    </div>
+    
+    <!-- Empty State -->
+    <div *ngIf="!loading && recentNotifications.length === 0 && !error" class="empty-state">
+      <mat-icon>notifications_off</mat-icon>
+      <p>No recent notifications</p>
+    </div>
+    
+    <!-- Notifications List -->
+    <mat-list *ngIf="!loading && recentNotifications.length > 0" class="notifications-list">
+      <div *ngFor="let notification of recentNotifications; let last = last" class="notification-item"
+           [class.recent]="isRecent(notification.dateSent)">
+        <mat-list-item>
+          <div matListItemIcon>
+            <mat-icon [class.recent-icon]="isRecent(notification.dateSent)">
+              {{ isRecent(notification.dateSent) ? 'notification_important' : 'notifications' }}
+            </mat-icon>
+          </div>
+          <div matListItemTitle class="notification-message">
+            {{notification.message | slice:0:50}}{{notification.message.length > 50 ? '...' : ''}}
+          </div>
+          <div matListItemLine class="notification-time" [matTooltip]="formatDate(notification.dateSent)">
+            {{formatTimeAgo(notification.dateSent)}}
+          </div>
+        </mat-list-item>
+        <mat-divider *ngIf="!last"></mat-divider>
+      </div>
+    </mat-list>
+  </mat-card-content>
+  
+  <mat-card-actions align="end">
+    <button mat-button color="primary" (click)="navigateToNotificationCenter()">
+      View All
+      <mat-icon class="view-all-icon">arrow_forward</mat-icon>
+    </button>
+  </mat-card-actions>
+</mat-card>
