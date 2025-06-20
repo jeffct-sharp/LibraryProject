@@ -117,14 +117,14 @@
                         <th>Borrow Date</th>
                         <th>Due Date</th>
                         <th>Status</th>
-                        <th>Overdue Days</th>
-                        <th class="text-end">Actions</th>
+                        <th class="text-end">Overdue Days</th>
+                        <!-- <th class="text-end">Actions</th> -->
                       </tr>
                     </thead>
                     <tbody>
                       <tr *ngFor="let borrowing of filteredBorrowings" 
                           [ngClass]="{'table-danger': getDisplayStatus(borrowing) === 'Overdue'}">
-                        <td>{{ borrowing.bookName }}</td>
+                          <td>{{ bookTitles[borrowing.bookID] || borrowing.bookName }}</td>
                         <td>{{ formatDate(borrowing.borrowDate) }}</td>
                         <td>{{ formatDueDate(borrowing.borrowDate) }}</td>
                         <td>
@@ -132,7 +132,7 @@
                             {{ getDisplayStatus(borrowing) }}
                           </span>
                         </td>
-                        <td>
+                        <td class="text-end">
                           <span *ngIf="calculateDaysOverdue(borrowing) > 0" class="text-danger">
                             {{ calculateDaysOverdue(borrowing) }} days
                             <span *ngIf="calculatePotentialFine(borrowing) > 0" class="badge bg-danger ms-1">

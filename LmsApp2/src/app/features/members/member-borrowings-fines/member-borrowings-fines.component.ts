@@ -8,6 +8,7 @@ import { AuthService } from '../../auth/auth.service';
 import { MemberResponseDto } from '../../../models/dtos/member-dtos';
 import { BorrowingTransactionDto } from '../../../models/dtos/transaction-dtos';
 import { FineDetailsDto } from '../../../models/dtos/fine-dtos';
+import { BookService } from '../../books/book.service';
 import { ConfirmationDialogService } from '../../../core/confirmation-dialog.service';
 
 @Component({
@@ -21,6 +22,7 @@ export class MemberBorrowingsFinesComponent implements OnInit {
   
   // Data sources
   borrowings: BorrowingTransactionDto[] = [];
+  bookTitles: { [bookID: number]: string } = {};
   filteredBorrowings: BorrowingTransactionDto[] = [];
   fines: FineDetailsDto[] = [];
   filteredFines: FineDetailsDto[] = [];
@@ -47,7 +49,8 @@ export class MemberBorrowingsFinesComponent implements OnInit {
     private fineService: FineService,
     private authService: AuthService,
     private snackBar: MatSnackBar,
-    private confirmService: ConfirmationDialogService
+    private confirmService: ConfirmationDialogService,
+    private bookService: BookService
   ) { }
 
   ngOnInit(): void {
@@ -100,6 +103,7 @@ export class MemberBorrowingsFinesComponent implements OnInit {
     this.memberService.getMemberBorrowings(this.memberId).subscribe({
       next: (data) => {
         this.borrowings = data;
+        this.fetchBookTitlesForBorrowings(data); // <-- Add this line
         // Apply initial filter
         this.applyBorrowingFilter();
         this.loadingBorrowings = false;
@@ -107,6 +111,22 @@ export class MemberBorrowingsFinesComponent implements OnInit {
       error: (err) => {
         this.error = `Failed to load borrowings: ${err.message || 'Unknown error'}`;
         this.loadingBorrowings = false;
+      }
+    });
+  }
+
+  fetchBookTitlesForBorrowings(borrowings: BorrowingTransactionDto[]): void {
+    const uniqueBookIds = Array.from(new Set(borrowings.map(b => b.bookID)));
+    uniqueBookIds.forEach(bookId => {
+      if (bookId && !this.bookTitles[bookId]) {
+        this.bookService.getBook(bookId).subscribe({
+          next: (book) => {
+            this.bookTitles[bookId] = book.title;
+          },
+          error: () => {
+            this.bookTitles[bookId] = 'Unknown Title';
+          }
+        });
       }
     });
   }
@@ -150,6 +170,9 @@ export class MemberBorrowingsFinesComponent implements OnInit {
     }
     
     this.filteredBorrowings = filtered;
+
+    // Fetch book titles for the filtered list
+  this.fetchBookTitlesForBorrowings(this.filteredBorrowings);
   }
   
   applyFineFilter(): void {
