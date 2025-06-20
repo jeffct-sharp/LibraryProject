@@ -31,7 +31,7 @@ const routes: Routes = [
     path: 'edit/:id', 
     component: MemberFormComponent, 
     canActivate: [AuthGuard, RoleGuard],
-    data: { roles: ['Admin'], title: 'Edit Member', isEditMode: true } 
+    data: { roles: ['Admin','Librarian','User'], title: 'Edit Member', isEditMode: true } 
   },
   { 
     path: ':id', 

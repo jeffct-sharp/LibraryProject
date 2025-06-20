@@ -67,7 +67,7 @@ namespace FinalProject.API.Controllers
             return Ok(new { Message = "Member registered successfully." });
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Librarian,User")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateMember(int id, [FromBody] UpdateMemberDto updateDto)
         {
