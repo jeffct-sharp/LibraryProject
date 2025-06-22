@@ -310,33 +310,27 @@ export class FineListComponent implements OnInit, AfterViewInit {
   
   applyOverdueFines(): void {
     this.loading = true;
-    if (this.isMemberSpecific && this.memberId) {
-      this.fineService.getMemberFines(this.memberId).subscribe({
-        next: (fines) => {
-          this.dataSource.data = fines;
-          this.calculateSummary(this.dataSource.data);
-          this.loading = false;
-          this.snackBar.open('Fines refreshed for member', 'Close', { duration: 3000 });
-        },
-        error: (err) => {
-          this.error = 'Failed to load member fines: ' + (err.message || 'Unknown error');
-          this.loading = false;
+    // Always call the backend to apply overdue fines, then reload the fines list
+    this.fineService.applyOverdueFines().subscribe({
+      next: (result) => {
+        this.snackBar.open(
+          `Applied ${result.finesCreated} new fines totaling ₹${result.totalAmount}`,
+          'Close',
+          { duration: 5000 }
+        );
+        // After applying, reload the correct fines list
+        if (this.isMemberSpecific && this.memberId) {
+          this.loadMemberFines();
+        } else {
+          this.loadFines();
         }
-      });
-    } else {
-      this.fineService.getAllFines().subscribe({
-        next: (fines) => {
-          this.dataSource.data = fines;
-          this.calculateSummary(this.dataSource.data);
-          this.loading = false;
-          this.snackBar.open('Fines refreshed', 'Close', { duration: 3000 });
-        },
-        error: (err) => {
-          this.error = 'Failed to load fines: ' + (err.message || 'Unknown error');
-          this.loading = false;
-        }
-      });
-    }
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = 'Failed to apply overdue fines: ' + (err.message || 'Unknown error');
+        this.loading = false;
+      }
+    });
   }
   
   viewFineDetails(fineId: number): void {

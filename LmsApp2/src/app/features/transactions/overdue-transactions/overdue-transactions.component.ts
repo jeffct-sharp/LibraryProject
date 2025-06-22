@@ -104,12 +104,11 @@ export class OverdueTransactionsComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe({
       next: (data) => {
-        // Transform the data to UI models with additional details
-        this.overdueTransactions = data.map(t => 
-          this.transactionService.mapToTransactionDisplayUiModel(t)
-        );
+        // Only show transactions that are overdue and not returned
+        this.overdueTransactions = data
+          .filter(t => t.status !== 'Returned') // <-- Use this if fineStatus is not available
+          .map(t => this.transactionService.mapToTransactionDisplayUiModel(t));
         
-        // Update the data source
         this.dataSource.data = this.overdueTransactions;
         
         // Calculate summary stats

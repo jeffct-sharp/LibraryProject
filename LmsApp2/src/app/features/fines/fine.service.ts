@@ -215,6 +215,26 @@ export class FineService {
     );
   }
 
+  // Always use getAllFines to fetch fines, then filter by memberID, fineID, and status as needed
+  getFines(options?: { memberID?: number; fineID?: number; status?: 'Pending' | 'Paid' }): Observable<FineDetailsDto[]> {
+    return this.getAllFines().pipe(
+      map(fines => {
+        let filtered = fines;
+        if (options?.memberID !== undefined) {
+          filtered = filtered.filter(f => f.memberID === options.memberID);
+        }
+        if (options?.fineID !== undefined) {
+          filtered = filtered.filter(f => f.fineID === options.fineID);
+        }
+        if (options?.status) {
+          filtered = filtered.filter(f => f.status === options.status);
+        }
+        return filtered;
+      }),
+      catchError(this.handleError)
+    );
+  }
+
   // Add helper method to calculate days overdue
   private calculateDaysOverdue(fine: FineDetailsDto): number | undefined {
     if (fine.status === 'Pending') {
