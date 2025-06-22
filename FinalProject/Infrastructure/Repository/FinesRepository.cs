@@ -38,7 +38,7 @@ namespace FinalProject.Infrastructure.Repository
 
         public async Task<IEnumerable<Fine>> GetFinesForMemberAsync(int memberId)
         {
-            return await _context.Fines.Where(f => f.MemberID == memberId).ToListAsync();
+            return await _context.Fines.Where(f => f.MemberID == memberId && f.Status != "Paid").ToListAsync();
         }
 
         public async Task DeleteFineAsync(int fineId)

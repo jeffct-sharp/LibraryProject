@@ -5,7 +5,7 @@
       <i class="pi pi-dollar me-2"></i>Fine Management
     </h2>
     <div class="action-buttons">
-      <button class="btn btn-outline-primary me-2" (click)="loadFines()" title="Refresh fines list">
+      <button class="btn btn-outline-primary me-2" (click)="refreshFines()" title="Refresh fines list">
         <i class="pi pi-refresh me-2"></i>Refresh
       </button>
       <button *ngIf="canManageFines()" class="btn btn-danger me-2" (click)="applyOverdueFines()">

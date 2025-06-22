@@ -309,29 +309,34 @@ export class FineListComponent implements OnInit, AfterViewInit {
   }
   
   applyOverdueFines(): void {
-    this.confirmationService.confirm(
-      'Are you sure you want to apply fines for all overdue books?',
-      'Confirm Apply Fines'
-    ).subscribe(result => {
-      if (result) {
-        this.loading = true;
-        this.fineService.applyOverdueFines().subscribe({
-          next: (result) => {
-            this.snackBar.open(
-              `Applied ${result.finesCreated} new fines totaling ₹${result.totalAmount}`,
-              'Close',
-              { duration: 5000 }
-            );
-            this.loadFines();
-            this.loading = false;
-          },
-          error: (err) => {
-            this.error = 'Failed to apply overdue fines: ' + (err.message || 'Unknown error');
-            this.loading = false;
-          }
-        });
-      }
-    });
+    this.loading = true;
+    if (this.isMemberSpecific && this.memberId) {
+      this.fineService.getMemberFines(this.memberId).subscribe({
+        next: (fines) => {
+          this.dataSource.data = fines;
+          this.calculateSummary(this.dataSource.data);
+          this.loading = false;
+          this.snackBar.open('Fines refreshed for member', 'Close', { duration: 3000 });
+        },
+        error: (err) => {
+          this.error = 'Failed to load member fines: ' + (err.message || 'Unknown error');
+          this.loading = false;
+        }
+      });
+    } else {
+      this.fineService.getAllFines().subscribe({
+        next: (fines) => {
+          this.dataSource.data = fines;
+          this.calculateSummary(this.dataSource.data);
+          this.loading = false;
+          this.snackBar.open('Fines refreshed', 'Close', { duration: 3000 });
+        },
+        error: (err) => {
+          this.error = 'Failed to load fines: ' + (err.message || 'Unknown error');
+          this.loading = false;
+        }
+      });
+    }
   }
   
   viewFineDetails(fineId: number): void {
@@ -606,5 +611,16 @@ export class FineListComponent implements OnInit, AfterViewInit {
     document.body.removeChild(link);
     
     this.snackBar.open('Export successful', 'Close', { duration: 3000 });
+  }
+
+  // Add a refresh method to handle both modes
+  refreshFines(): void {
+    // check if we are in member-specific mode
+    if (this.isMemberSpecific && this.memberId) {
+      this.loadMemberFines();
+    } else {
+      // Load all fines if not in member-specific mode
+      this.loadFines();
+    }
   }
 }

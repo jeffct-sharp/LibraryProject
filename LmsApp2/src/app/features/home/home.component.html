@@ -112,12 +112,12 @@
             </div>
             
             <!-- When user is logged in but doesn't have a member ID -->
-            <div *ngIf="isAuthenticated && getMemberIdFromAuth() <= 0">
+            <!-- <div *ngIf="isAuthenticated && getMemberIdFromAuth() <= 0">
               <button class="btn btn-warning w-100" disabled title="Member ID not found">
                 <i class="pi pi-exclamation-triangle me-2"></i>Profile Incomplete
               </button>
               <small class="text-muted d-block mt-2">Your account is not linked to a member profile</small>
-            </div>
+            </div> -->
             
             <!-- When user is not logged in -->
             <div *ngIf="!isAuthenticated">

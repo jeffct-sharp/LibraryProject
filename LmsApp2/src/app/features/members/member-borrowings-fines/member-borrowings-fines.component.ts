@@ -323,7 +323,7 @@ export class MemberBorrowingsFinesComponent implements OnInit {
     // Navigate to the fine payment page
     this.router.navigate(['/fines/payment'], {
       queryParams: {
-        fineId: fineId,
+        finId: fineId,
         memberId: this.memberId,
         returnUrl: `/members/${this.memberId}/borrowings-fines`
       }

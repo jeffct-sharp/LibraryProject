@@ -100,8 +100,8 @@ export class FineService {
     return this.http.post<any>(`${this.apiBaseUrl}${this.endpoints.pay}`, paymentData)
       .pipe(
         tap(response => {
-          console.log('Fine payment successful:', response);
-          // If you have any mediator service events, publish them here
+          // Optionally, publish an event or handle UI update
+          // After payment, the backend should mark the fine as "Paid"
         }),
         catchError(error => {
           console.error('Error paying fine:', error);

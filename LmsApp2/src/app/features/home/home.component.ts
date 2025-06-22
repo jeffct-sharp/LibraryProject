@@ -47,6 +47,9 @@ export class HomeComponent implements OnInit {
     
     this.isAuthenticated = this.authService.isAuthenticated();
     if (this.isAuthenticated) {
+      console.log(this.authService.getUserRoles());
+      // console.log(this.authService.getUserRoles());
+      // console.log(this.authService.getUserRoles());
       this.userRole = this.authService.getUserRoles()[0] || null;
       this.userName = this.authService.getUsernameFromStorage();
       this.loadMyFines();
@@ -94,6 +97,7 @@ export class HomeComponent implements OnInit {
   getMemberIdFromAuth(): number {
     const userData = this.authService.currentUserValue;
     if (userData && userData.member && userData.member.memberID) {
+      console.log('Member ID from auth service:', userData.member.memberID);
       const memberId = userData.member.memberID;
       if (!isNaN(Number(memberId))) {
         return Number(memberId);
@@ -212,6 +216,8 @@ export class HomeComponent implements OnInit {
       return;
     }
     // Borrow logic here
+    console.log('Borrowing book:', book);
+    this.router.navigate(['/transactions/borrow'], { queryParams: { bookId: book.bookID } });
   }
 
   navigateToDashboard(): void {
